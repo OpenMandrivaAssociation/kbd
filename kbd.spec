@@ -10,6 +10,7 @@ URL:    	ftp://ftp.win.tue.nl/pub/linux-local/utils/kbd/
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%version.tar.bz2
 Source1:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%version.tar.bz2.sign
 Source2:	ucwfonts.tar.bz2
+Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 # mandriva keyboard updates
 Patch0: 	kbd-1.12-mandriva.patch
 # tilde with twosuperior in french keyboard
@@ -45,6 +46,12 @@ It also includes a number of different fonts and keyboard maps.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+
+mkdir mac_frnew; cd mac_frnew
+tar -zxf %_sourcedir/kbd-mac-fr-4.1.tar.gz
+gunzip mac-fr-ext_new.kmap.gz
+mv mac-fr-ext_new.kmap ../data/keymaps/mac/all/mac-fr-ext_new.map
+cd ..; rm -rf mac_frnew
 
 %build
 ./configure --datadir=%kbddir --mandir=%_mandir
