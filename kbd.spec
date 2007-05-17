@@ -9,6 +9,22 @@ Group:  	Terminals
 URL:    	ftp://ftp.win.tue.nl/pub/linux-local/utils/kbd/
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%version.tar.bz2
 Source1:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%version.tar.bz2.sign
+Source2:	ucwfonts.tar.bz2
+# mandriva keyboard updates
+Patch0: 	kbd-1.12-mandriva.patch
+# tilde with twosuperior in french keyboard
+Patch1: 	kbd-1.12-tilde_twosuperior_french_kbd.patch
+# some modifications to cover PPC using Linux keycodes
+Patch2: 	kbd-1.12-ppc_using_linux_keycodes.patch
+# thai support, I tried to convert it from console-tools package
+# (support added by Pablo), using also updated thay_ksym patch from
+# debian and the following patches from:
+# http://linux.thai.net/~thep/th-console/console-tools/console-tools-thai_ksym.patch
+# http://linux.thai.net/~thep/th-console/console-data/console-data-thai_orig-1999.08.29.patch
+Patch3: 	kbd-1.12-thai_ksym_deb.patch
+Patch4: 	kbd-1.12-data_thai.patch
+# input characters in utf8 mode when console is set to utf8 mode
+Patch5: 	kbd-1.12-stty_iutf8.patch
 BuildRoot:	%_tmppath/%name-buildroot
 BuildRequires:	gcc
 BuildRequires:	gettext-devel
@@ -20,7 +36,15 @@ This package contains utilities to load console fonts and keyboard maps.
 It also includes a number of different fonts and keyboard maps.
 
 %prep
-%setup -q
+%setup -q -a 2
+%patch0 -p1
+%patch1 -p1
+%ifarch ppc ppc64
+%patch2 -p1
+%endif
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %build
 ./configure --datadir=%kbddir --mandir=%_mandir
@@ -29,6 +53,11 @@ It also includes a number of different fonts and keyboard maps.
 %install
 rm -rf %buildroot
 make DESTDIR=%buildroot install
+
+# keep compatibility with console-tools
+ln -s fr-latin9.map.gz \
+      %buildroot/usr/lib/kbd/keymaps/i386/azerty/fr-latin0.map.gz
+
 %find_lang %name
 
 %clean
