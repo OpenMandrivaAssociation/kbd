@@ -11,6 +11,9 @@ Source0:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%version.tar.bz2
 Source1:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%version.tar.bz2.sign
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
+Source4:	keytable.init
+Source5:	kbd-mdv-keymaps-20070521.tar.bz2
+Source6:	configure_keyboard.sh
 # mandriva keyboard updates
 Patch0: 	kbd-1.12-mandriva.patch
 # tilde with twosuperior in french keyboard
@@ -26,6 +29,8 @@ Patch3: 	kbd-1.12-thai_ksym_deb.patch
 Patch4: 	kbd-1.12-data_thai.patch
 # input characters in utf8 mode when console is set to utf8 mode
 Patch5: 	kbd-1.12-stty_iutf8.patch
+# on PPC we need to see whether mac or Linux keycodes are being used - stew
+Patch6: 	keytable.init.ppc.patch
 BuildRoot:	%_tmppath/%name-buildroot
 BuildRequires:	gcc
 BuildRequires:	gettext-devel
@@ -53,6 +58,10 @@ gunzip mac-fr-ext_new.kmap.gz
 mv mac-fr-ext_new.kmap ../data/keymaps/mac/all/mac-fr-ext_new.map
 cd ..; rm -rf mac_frnew
 
+pushd data
+tar -jxf %_sourcedir/kbd-mdv-keymaps-20070521.tar.bz2
+popd
+
 %build
 ./configure --datadir=%kbddir --mandir=%_mandir
 %make
@@ -61,14 +70,50 @@ cd ..; rm -rf mac_frnew
 rm -rf %buildroot
 make DESTDIR=%buildroot install
 
-# keep compatibility with console-tools
+# keep some keymap compatibility with console-tools
 ln -s fr-latin9.map.gz \
-      %buildroot/usr/lib/kbd/keymaps/i386/azerty/fr-latin0.map.gz
+	%buildroot/usr/lib/kbd/keymaps/i386/azerty/fr-latin0.map.gz
+ln -s us-acentos.map.gz \
+	%buildroot/usr/lib/kbd/keymaps/i386/qwerty/us-intl.map.gz
+ln -s mac-us.map.gz \
+	%buildroot/usr/lib/kbd/keymaps/mac/all/qwerty/mac-br-abnt2.map.gz
+ln -s mac-us.map.gz \
+	%buildroot/usr/lib/kbd/keymaps/mac/all/qwerty/mac-gr.map.gz
+ln -s mac-us.map.gz \
+	%buildroot/usr/lib/kbd/keymaps/mac/all/qwerty/mac-no-latin1.map.gz
+ln -s mac-us.map.gz \
+	%buildroot/usr/lib/kbd/keymaps/mac/all/qwerty/mac-cz-us-qwertz.map.gz
+ln -s mac-us.map.gz \
+	%buildroot/usr/lib/kbd/keymaps/mac/all/qwerty/mac-hu.map.gz
+ln -s mac-us.map.gz \
+	%buildroot/usr/lib/kbd/keymaps/mac/all/qwerty/mac-Pl02.map.gz
+ln -s mac-us.map.gz \
+	%buildroot/usr/lib/kbd/keymaps/mac/all/qwerty/mac-ru1.map.gz
+ln -s mac-us.map.gz \
+	%buildroot/usr/lib/kbd/keymaps/mac/all/qwerty/mac-jp106.map.gz
+
+mkdir -p %buildroot/%_sysconfdir/profile.d
+install -m 0755 %_sourcedir/configure_keyboard.sh \
+	%buildroot/%_sysconfdir/profile.d/configure_keyboard.sh
+
+mkdir -p %buildroot/%_sysconfdir/rc.d/init.d
+install -m 0755 %_sourcedir/keytable.init \
+	%buildroot/%_sysconfdir/rc.d/init.d/keytable
+%ifarch ppc ppc64
+bzcat %_sourcedir/keytable.init.ppc.patch | \
+	patch -d %buildroot/%_sysconfdir/rc.d/init.d -p0
+%endif
 
 %find_lang %name
 
 %clean
 rm -rf %buildroot
+
+%post
+%_post_service keytable
+
+%preun
+%_preun_service keytable
 
 %files -f %name.lang
 %defattr(0755,root,root,0755)
@@ -96,6 +141,8 @@ rm -rf %buildroot
 %{_bindir}/unicode_start
 %{_bindir}/unicode_stop
 /bin/loadkeys
+%config(noreplace) %_sysconfdir/profile.d/configure_keyboard.sh
+%config(noreplace) %_sysconfdir/rc.d/init.d/keytable
 %defattr(0644,root,root,0755)
 %{_mandir}/man1/chvt.1*
 %{_mandir}/man1/deallocvt.1*
