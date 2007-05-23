@@ -109,7 +109,7 @@ bzcat %_sourcedir/keytable.init.ppc.patch | \
 %endif
 
 # initscripts expects them in these places
-mkdir %buildroot/bin
+mkdir -p %buildroot/bin
 mv %buildroot/%_bindir/unicode_{start,stop} %buildroot/bin
 ln -s ../../bin/unicode_start %buildroot/%_bindir/unicode_start
 ln -s ../../bin/unicode_stop %buildroot/%_bindir/unicode_stop
