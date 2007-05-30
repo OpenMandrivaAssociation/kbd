@@ -14,7 +14,7 @@ Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source4:	keytable.init
 Source5:	kbd-mdv-keymaps-20070521.tar.bz2
 Source6:	configure_keyboard.sh
-#Source7:	setsysfont
+Source7:	setsysfont
 Source8:	vt-is-UTF8.c
 # mandriva keyboard updates
 Patch0: 	kbd-1.12-mandriva.patch
@@ -29,8 +29,8 @@ Patch2: 	kbd-1.12-ppc_using_linux_keycodes.patch
 # http://linux.thai.net/~thep/th-console/console-data/console-data-thai_orig-1999.08.29.patch
 Patch3: 	kbd-1.12-thai_ksym_deb.patch
 Patch4: 	kbd-1.12-data_thai.patch
-# input characters in utf8 mode when console is set to utf8 mode
-Patch5: 	kbd-1.12-stty_iutf8.patch
+# loadkeys only works as root, and we use unicode_start in configure_keyboard.sh
+Patch5: 	kbd-1.12-unicode_start_no_loadkeys.patch
 # on PPC we need to see whether mac or Linux keycodes are being used - stew
 Patch6: 	keytable.init.ppc.patch
 BuildRoot:	%_tmppath/%name-buildroot
@@ -38,6 +38,9 @@ BuildRequires:	gcc
 BuildRequires:	gettext-devel
 BuildRequires:	glibc-devel
 BuildRequires:	make
+Conflicts:	console-tools
+Conflicts:	initscripts <= 8.53-1mdv2008.0
+Provides:	vt-tools
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
@@ -62,13 +65,14 @@ cd ..; rm -rf mac_frnew
 
 pushd data
 tar -jxf %_sourcedir/kbd-mdv-keymaps-20070521.tar.bz2
+cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
 %build
 ./configure --datadir=%kbddir --mandir=%_mandir
 %make
 
-gcc %optflags -o vt-is-UTF8.c %_sourcedir/vt-is-UTF8.c
+gcc %optflags -o vt-is-UTF8 %_sourcedir/vt-is-UTF8.c
 
 %install
 rm -rf %buildroot
@@ -117,6 +121,12 @@ mv %buildroot/%_bindir/setfont %buildroot/bin
 ln -s ../../bin/setfont %buildroot/%_bindir/setfont
 
 install -m 0755 vt-is-UTF8 %buildroot/%_bindir
+mkdir %buildroot/sbin
+install -m 0755 %_sourcedir/setsysfont %buildroot/sbin
+
+# kbdrate already provided by util-linux
+rm -f %buildroot/%_bindir/kbdrate
+rm -f %buildroot/%_mandir/man8/kbdrate.8
 
 %find_lang %name
 
@@ -125,6 +135,26 @@ rm -rf %buildroot
 
 %post
 %_post_service keytable
+if [ -f %_sysconfdir/sysconfig/i18n ] ; then
+	. %_sysconfdir/sysconfig/i18n
+	if [ -d %_sysconfdir/sysconfig/console ] ; then
+		if [ -n "$SYSFONT" ]; then
+			mkdir -p %_sysconfdir/sysconfig/console/consolefonts
+			cp -f %{kbddir}/consolefonts/$SYSFONT* \
+				%_sysconfdir/sysconfig/console/consolefonts
+		fi
+		if [ -n "$UNIMAP" ]; then
+			mkdir -p %_sysconfdir/sysconfig/console/unimaps
+			cp -f %{kbddir}/unimaps/$UNIMAP* \
+				%_sysconfdir/sysconfig/console/unimaps
+		fi
+		if [ -n "$SYSFONTACM" ]; then
+			mkdir -p %_sysconfdir/sysconfig/console/consoletrans
+			cp -f %{kbddir}/consoletrans/$SYSFONTACM* \
+				%_sysconfdir/sysconfig/console/consoletrans
+		fi
+	fi
+fi
 
 %preun
 %_preun_service keytable
@@ -137,7 +167,6 @@ rm -rf %buildroot
 %_bindir/fgconsole
 %_bindir/getkeycodes
 %_bindir/kbd_mode
-%_bindir/kbdrate
 %_bindir/loadunimap
 %_bindir/mapscrn
 %_bindir/openvt
@@ -155,12 +184,13 @@ rm -rf %buildroot
 %_bindir/unicode_start
 %_bindir/unicode_stop
 %_bindir/vt-is-UTF8
+%config(noreplace) %_sysconfdir/profile.d/configure_keyboard.sh
+%config(noreplace) %_sysconfdir/rc.d/init.d/keytable
 /bin/loadkeys
 /bin/setfont
 /bin/unicode_start
 /bin/unicode_stop
-%config(noreplace) %_sysconfdir/profile.d/configure_keyboard.sh
-%config(noreplace) %_sysconfdir/rc.d/init.d/keytable
+/sbin/setsysfont
 %defattr(0644,root,root,0755)
 %_mandir/man1/chvt.1*
 %_mandir/man1/deallocvt.1*
@@ -180,7 +210,6 @@ rm -rf %buildroot
 %_mandir/man1/unicode_stop.1*
 %_mandir/man5/keymaps.5*
 %_mandir/man8/getkeycodes.8*
-%_mandir/man8/kbdrate.8*
 %_mandir/man8/loadunimap.8*
 %_mandir/man8/mapscrn.8*
 %_mandir/man8/resizecons.8*
