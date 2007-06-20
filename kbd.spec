@@ -1,4 +1,4 @@
-%define kbddir %_prefix/lib/kbd
+%define kbddir /lib/kbd
 
 Name:   	kbd
 Version:	1.12
@@ -38,9 +38,10 @@ BuildRequires:	gcc
 BuildRequires:	gettext-devel
 BuildRequires:	glibc-devel
 BuildRequires:	make
-Conflicts:	console-tools
+#Conflicts:	console-tools
 Conflicts:	initscripts <= 8.53-1mdv2008.0
-Provides:	vt-tools
+Obsoletes:	console-tools <= 0.2.3-62mdv2008.0
+#Provides:	vt-tools
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
@@ -80,25 +81,25 @@ make DESTDIR=%buildroot install
 
 # keep some keymap compatibility with console-tools
 ln -s fr-latin9.map.gz \
-	%buildroot/usr/lib/kbd/keymaps/i386/azerty/fr-latin0.map.gz
+	%buildroot%kbddir/keymaps/i386/azerty/fr-latin0.map.gz
 ln -s us-acentos.map.gz \
-	%buildroot/usr/lib/kbd/keymaps/i386/qwerty/us-intl.map.gz
+	%buildroot%kbddir/keymaps/i386/qwerty/us-intl.map.gz
 ln -s mac-us.map.gz \
-	%buildroot/usr/lib/kbd/keymaps/mac/all/mac-br-abnt2.map.gz
+	%buildroot%kbddir/keymaps/mac/all/mac-br-abnt2.map.gz
 ln -s mac-us.map.gz \
-	%buildroot/usr/lib/kbd/keymaps/mac/all/mac-gr.map.gz
+	%buildroot%kbddir/keymaps/mac/all/mac-gr.map.gz
 ln -s mac-us.map.gz \
-	%buildroot/usr/lib/kbd/keymaps/mac/all/mac-no-latin1.map.gz
+	%buildroot%kbddir/keymaps/mac/all/mac-no-latin1.map.gz
 ln -s mac-us.map.gz \
-	%buildroot/usr/lib/kbd/keymaps/mac/all/mac-cz-us-qwertz.map.gz
+	%buildroot%kbddir/keymaps/mac/all/mac-cz-us-qwertz.map.gz
 ln -s mac-us.map.gz \
-	%buildroot/usr/lib/kbd/keymaps/mac/all/mac-hu.map.gz
+	%buildroot%kbddir/keymaps/mac/all/mac-hu.map.gz
 ln -s mac-us.map.gz \
-	%buildroot/usr/lib/kbd/keymaps/mac/all/mac-Pl02.map.gz
+	%buildroot%kbddir/keymaps/mac/all/mac-Pl02.map.gz
 ln -s mac-us.map.gz \
-	%buildroot/usr/lib/kbd/keymaps/mac/all/mac-ru1.map.gz
+	%buildroot%kbddir/keymaps/mac/all/mac-ru1.map.gz
 ln -s mac-us.map.gz \
-	%buildroot/usr/lib/kbd/keymaps/mac/all/mac-jp106.map.gz
+	%buildroot%kbddir/keymaps/mac/all/mac-jp106.map.gz
 
 mkdir -p %buildroot/%_sysconfdir/profile.d
 install -m 0755 %_sourcedir/configure_keyboard.sh \
@@ -135,26 +136,26 @@ rm -rf %buildroot
 
 %post
 %_post_service keytable
-if [ -f %_sysconfdir/sysconfig/i18n ] ; then
-	. %_sysconfdir/sysconfig/i18n
-	if [ -d %_sysconfdir/sysconfig/console ] ; then
-		if [ -n "$SYSFONT" ]; then
-			mkdir -p %_sysconfdir/sysconfig/console/consolefonts
-			cp -f %{kbddir}/consolefonts/$SYSFONT* \
-				%_sysconfdir/sysconfig/console/consolefonts
-		fi
-		if [ -n "$UNIMAP" ]; then
-			mkdir -p %_sysconfdir/sysconfig/console/unimaps
-			cp -f %{kbddir}/unimaps/$UNIMAP* \
-				%_sysconfdir/sysconfig/console/unimaps
-		fi
-		if [ -n "$SYSFONTACM" ]; then
-			mkdir -p %_sysconfdir/sysconfig/console/consoletrans
-			cp -f %{kbddir}/consoletrans/$SYSFONTACM* \
-				%_sysconfdir/sysconfig/console/consoletrans
-		fi
-	fi
-fi
+#if [ -f %_sysconfdir/sysconfig/i18n ] ; then
+#	. %_sysconfdir/sysconfig/i18n
+#	if [ -d %_sysconfdir/sysconfig/console ] ; then
+#		if [ -n "$SYSFONT" ]; then
+#			mkdir -p %_sysconfdir/sysconfig/console/consolefonts
+#			cp -f %{kbddir}/consolefonts/$SYSFONT* \
+#				%_sysconfdir/sysconfig/console/consolefonts
+#		fi
+#		if [ -n "$UNIMAP" ]; then
+#			mkdir -p %_sysconfdir/sysconfig/console/unimaps
+#			cp -f %{kbddir}/unimaps/$UNIMAP* \
+#				%_sysconfdir/sysconfig/console/unimaps
+#		fi
+#		if [ -n "$SYSFONTACM" ]; then
+#			mkdir -p %_sysconfdir/sysconfig/console/consoletrans
+#			cp -f %{kbddir}/consoletrans/$SYSFONTACM* \
+#				%_sysconfdir/sysconfig/console/consoletrans
+#		fi
+#	fi
+#fi
 
 %preun
 %_preun_service keytable
