@@ -1,4 +1,4 @@
-%define kbddir /lib/kbd
+%define kbddir /usr/lib/kbd
 
 Name:   	kbd
 Version:	1.12
@@ -38,10 +38,10 @@ BuildRequires:	gcc
 BuildRequires:	gettext-devel
 BuildRequires:	glibc-devel
 BuildRequires:	make
-#Conflicts:	console-tools
 Conflicts:	initscripts <= 8.53-1mdv2008.0
 Obsoletes:	console-tools <= 0.2.3-62mdv2008.0
-#Provides:	vt-tools
+# Transitional provides, keep them util updating requires on other packages
+Provides:	console-tools = 0.2.3-63mdv2008.0
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
@@ -113,7 +113,7 @@ bzcat %_sourcedir/keytable.init.ppc.patch | \
 	patch -d %buildroot/%_sysconfdir/rc.d/init.d -p0
 %endif
 
-# initscripts expects them in these places
+# some scripts expects setfont and unicode_{start,stop} inside /bin
 mkdir -p %buildroot/bin
 mv %buildroot/%_bindir/unicode_{start,stop} %buildroot/bin
 ln -s ../../bin/unicode_start %buildroot/%_bindir/unicode_start
@@ -136,26 +136,6 @@ rm -rf %buildroot
 
 %post
 %_post_service keytable
-#if [ -f %_sysconfdir/sysconfig/i18n ] ; then
-#	. %_sysconfdir/sysconfig/i18n
-#	if [ -d %_sysconfdir/sysconfig/console ] ; then
-#		if [ -n "$SYSFONT" ]; then
-#			mkdir -p %_sysconfdir/sysconfig/console/consolefonts
-#			cp -f %{kbddir}/consolefonts/$SYSFONT* \
-#				%_sysconfdir/sysconfig/console/consolefonts
-#		fi
-#		if [ -n "$UNIMAP" ]; then
-#			mkdir -p %_sysconfdir/sysconfig/console/unimaps
-#			cp -f %{kbddir}/unimaps/$UNIMAP* \
-#				%_sysconfdir/sysconfig/console/unimaps
-#		fi
-#		if [ -n "$SYSFONTACM" ]; then
-#			mkdir -p %_sysconfdir/sysconfig/console/consoletrans
-#			cp -f %{kbddir}/consoletrans/$SYSFONTACM* \
-#				%_sysconfdir/sysconfig/console/consoletrans
-#		fi
-#	fi
-#fi
 
 %preun
 %_preun_service keytable
