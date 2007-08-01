@@ -34,7 +34,7 @@ Patch5: 	kbd-1.12-unicode_start_no_loadkeys.patch
 # on PPC we need to see whether mac or Linux keycodes are being used - stew
 Patch6: 	keytable.init.ppc.patch
 BuildRoot:	%_tmppath/%name-buildroot
-BuildRequires:	bison
+BuildRequires:	bison flex
 BuildRequires:	gcc
 BuildRequires:	gettext-devel
 BuildRequires:	glibc-devel
