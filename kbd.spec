@@ -39,6 +39,7 @@ BuildRequires:	gettext-devel
 BuildRequires:	glibc-devel
 BuildRequires:	make
 Conflicts:	initscripts <= 8.53-1mdv2008.0
+Conflicts:	util-linux < 2.13
 Obsoletes:	console-tools <= 0.2.3-62mdv2008.0
 # Transitional provides, keep them util updating requires on other packages
 Provides:	console-tools = 0.2.3-63mdv2008.0
