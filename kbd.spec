@@ -125,10 +125,6 @@ install -m 0755 vt-is-UTF8 %buildroot/%_bindir
 mkdir %buildroot/sbin
 install -m 0755 %_sourcedir/setsysfont %buildroot/sbin
 
-# kbdrate already provided by util-linux
-rm -f %buildroot/%_bindir/kbdrate
-rm -f %buildroot/%_mandir/man8/kbdrate.8
-
 %find_lang %name
 
 %clean
@@ -148,6 +144,7 @@ rm -rf %buildroot
 %_bindir/fgconsole
 %_bindir/getkeycodes
 %_bindir/kbd_mode
+%_bindir/kbdrate
 %_bindir/loadunimap
 %_bindir/mapscrn
 %_bindir/openvt
@@ -191,6 +188,7 @@ rm -rf %buildroot
 %_mandir/man1/unicode_stop.1*
 %_mandir/man5/keymaps.5*
 %_mandir/man8/getkeycodes.8*
+%_mandir/man8/kbdrate.8*
 %_mandir/man8/loadunimap.8*
 %_mandir/man8/mapscrn.8*
 %_mandir/man8/resizecons.8*
