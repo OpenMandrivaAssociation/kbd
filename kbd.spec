@@ -152,7 +152,9 @@ rm -rf %buildroot
 %_bindir/psfgettable
 %_bindir/psfstriptable
 %_bindir/psfxtable
+%ifarch %{ix86}
 %_bindir/resizecons
+%endif
 %_bindir/setfont
 %_bindir/setkeycodes
 %_bindir/setleds
