@@ -2,7 +2,7 @@
 
 Name:   	kbd
 Version:	1.12
-Release:	%mkrel 3
+Release:	%mkrel 4
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -100,6 +100,12 @@ ln -s mac-us.map.gz \
 	%buildroot%kbddir/keymaps/mac/all/mac-ru1.map.gz
 ln -s mac-us.map.gz \
 	%buildroot%kbddir/keymaps/mac/all/mac-jp106.map.gz
+ln -s iso07u-16.psfu.gz \
+	%buildroot%kbddir/consolefonts/iso07.f16.psfu.gz
+ln -s lat2-16.psfu.gz \
+	%buildroot%kbddir/consolefonts/lat2-sun16.psfu.gz
+ln -s lat5-16.psfu.gz \
+	%buildroot%kbddir/consolefonts/lat5u-16.psfu.gz
 
 mkdir -p %buildroot/%_sysconfdir/profile.d
 install -m 0755 %_sourcedir/configure_keyboard.sh \
