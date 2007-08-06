@@ -2,7 +2,7 @@
 
 Name:   	kbd
 Version:	1.12
-Release:	%mkrel 4
+Release:	%mkrel 5
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -79,7 +79,7 @@ gcc %optflags -o vt-is-UTF8 %_sourcedir/vt-is-UTF8.c
 rm -rf %buildroot
 make DESTDIR=%buildroot install
 
-# keep some keymap compatibility with console-tools
+# keep some keymap/consolefonts compatibility with console-tools
 ln -s fr-latin9.map.gz \
 	%buildroot%kbddir/keymaps/i386/azerty/fr-latin0.map.gz
 ln -s us-acentos.map.gz \
@@ -106,6 +106,16 @@ ln -s lat2-16.psfu.gz \
 	%buildroot%kbddir/consolefonts/lat2-sun16.psfu.gz
 ln -s lat5-16.psfu.gz \
 	%buildroot%kbddir/consolefonts/lat5u-16.psfu.gz
+
+# Our initscripts/drakx-kbd-mouse-x11 may want to load these directly as
+# they were like this when using console-tools (GRP_TOGGLE), so we do
+# this to keep compatibility (#32284)
+cp %buildroot%kbddir/keymaps/i386/include/rwin_toggle.inc \
+   %buildroot%kbddir/keymaps/i386/include/rwin_toggle.map
+gzip %buildroot%kbddir/keymaps/i386/include/rwin_toggle.map
+cp %buildroot%kbddir/keymaps/i386/include/caps_toggle.inc \
+   %buildroot%kbddir/keymaps/i386/include/caps_toggle.map
+gzip %buildroot%kbddir/keymaps/i386/include/caps_toggle.map
 
 mkdir -p %buildroot/%_sysconfdir/profile.d
 install -m 0755 %_sourcedir/configure_keyboard.sh \
