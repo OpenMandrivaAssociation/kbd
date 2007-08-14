@@ -2,7 +2,7 @@
 
 Name:   	kbd
 Version:	1.12
-Release:	%mkrel 5
+Release:	%mkrel 6
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -15,7 +15,6 @@ Source4:	keytable.init
 Source5:	kbd-mdv-keymaps-20070521.tar.bz2
 Source6:	configure_keyboard.sh
 Source7:	setsysfont
-Source8:	vt-is-UTF8.c
 # mandriva keyboard updates
 Patch0: 	kbd-1.12-mandriva.patch
 # tilde with twosuperior in french keyboard
@@ -72,8 +71,6 @@ popd
 %build
 ./configure --datadir=%kbddir --mandir=%_mandir
 %make
-
-gcc %optflags -o vt-is-UTF8 %_sourcedir/vt-is-UTF8.c
 
 %install
 rm -rf %buildroot
@@ -137,7 +134,6 @@ ln -s ../../bin/unicode_stop %buildroot/%_bindir/unicode_stop
 mv %buildroot/%_bindir/setfont %buildroot/bin
 ln -s ../../bin/setfont %buildroot/%_bindir/setfont
 
-install -m 0755 vt-is-UTF8 %buildroot/%_bindir
 mkdir %buildroot/sbin
 install -m 0755 %_sourcedir/setsysfont %buildroot/sbin
 
@@ -179,7 +175,6 @@ rm -rf %buildroot
 %_bindir/showkey
 %_bindir/unicode_start
 %_bindir/unicode_stop
-%_bindir/vt-is-UTF8
 %config(noreplace) %_sysconfdir/profile.d/configure_keyboard.sh
 %config(noreplace) %_sysconfdir/rc.d/init.d/keytable
 /bin/loadkeys
