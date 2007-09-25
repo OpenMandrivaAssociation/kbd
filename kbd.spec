@@ -2,7 +2,7 @@
 
 Name:   	kbd
 Version:	1.12
-Release:	%mkrel 6
+Release:	%mkrel 7
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -107,12 +107,14 @@ ln -s lat5-16.psfu.gz \
 # Our initscripts/drakx-kbd-mouse-x11 may want to load these directly as
 # they were like this when using console-tools (GRP_TOGGLE), so we do
 # this to keep compatibility (#32284)
-cp %buildroot%kbddir/keymaps/i386/include/rwin_toggle.inc \
-   %buildroot%kbddir/keymaps/i386/include/rwin_toggle.map
-gzip %buildroot%kbddir/keymaps/i386/include/rwin_toggle.map
-cp %buildroot%kbddir/keymaps/i386/include/caps_toggle.inc \
-   %buildroot%kbddir/keymaps/i386/include/caps_toggle.map
-gzip %buildroot%kbddir/keymaps/i386/include/caps_toggle.map
+for toggle_file in alt_shift_toggle caps_toggle ctrl_alt_toggle \
+                   ctrl_shift_toggle lwin_toggle menu_toggle \
+                   rwin_toggle toggle
+do
+	cp %buildroot%kbddir/keymaps/i386/include/$toggle_file.inc \
+	   %buildroot%kbddir/keymaps/i386/include/$toggle_file.map
+	gzip %buildroot%kbddir/keymaps/i386/include/$toggle_file.map
+done
 
 mkdir -p %buildroot/%_sysconfdir/profile.d
 install -m 0755 %_sourcedir/configure_keyboard.sh \
