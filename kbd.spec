@@ -1,8 +1,9 @@
 %define kbddir /usr/lib/kbd
+%define mdv_keymaps_ver 20071113
 
 Name:   	kbd
 Version:	1.12
-Release:	%mkrel 8
+Release:	%mkrel 9
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -12,7 +13,7 @@ Source1:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%version.tar.bz2.sign
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source4:	keytable.init
-Source5:	kbd-mdv-keymaps-20070521.tar.bz2
+Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 Source6:	configure_keyboard.sh
 Source7:	setsysfont
 # mandriva keyboard updates
@@ -64,7 +65,7 @@ mv mac-fr-ext_new.kmap ../data/keymaps/mac/all/mac-fr-ext_new.map
 cd ..; rm -rf mac_frnew
 
 pushd data
-tar -jxf %_sourcedir/kbd-mdv-keymaps-20070521.tar.bz2
+tar -jxf %_sourcedir/kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
