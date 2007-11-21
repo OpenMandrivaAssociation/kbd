@@ -31,8 +31,6 @@ Patch3: 	kbd-1.12-thai_ksym_deb.patch
 Patch4: 	kbd-1.12-data_thai.patch
 # loadkeys only works as root, and we use unicode_start in configure_keyboard.sh
 Patch5: 	kbd-1.12-unicode_start_no_loadkeys.patch
-# on PPC we need to see whether mac or Linux keycodes are being used - stew
-Patch6: 	keytable.init.ppc.patch
 BuildRoot:	%_tmppath/%name-buildroot
 BuildRequires:	bison flex
 BuildRequires:	gcc
