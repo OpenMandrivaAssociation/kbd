@@ -34,6 +34,7 @@ Patch5: 	kbd-1.12-unicode_start_no_loadkeys.patch
 # Don't allow unicode_{start,stop} to run if we aren't in a linux vt, as
 # it doesn't make sense and causes bugs if we run it under X
 Patch6: 	kbd-1.12-unicode_only_in_linux_vt.patch
+BuildRoot:	%_tmppath/%name-buildroot
 BuildRequires:	bison flex
 BuildRequires:	gcc
 BuildRequires:	gettext-devel
