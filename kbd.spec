@@ -34,6 +34,8 @@ Patch5: 	kbd-1.12-unicode_start_no_loadkeys.patch
 # Don't allow unicode_{start,stop} to run if we aren't in a linux vt, as
 # it doesn't make sense and causes bugs if we run it under X
 Patch6: 	kbd-1.12-unicode_only_in_linux_vt.patch
+# Accordingly to Belgian keyboard layout, keycode 7 should be paragraph_sign
+Patch7: 	kbd-1.12-be-latin1-paragraph_sign-fix.patch
 BuildRoot:	%_tmppath/%name-buildroot
 BuildRequires:	bison flex
 BuildRequires:	gcc
@@ -59,6 +61,7 @@ It also includes a number of different fonts and keyboard maps.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %_sourcedir/kbd-mac-fr-4.1.tar.gz
