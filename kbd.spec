@@ -3,7 +3,7 @@
 
 Name:   	kbd
 Version:	1.14.1
-Release:	%mkrel 1
+Release:	%mkrel 2
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -35,6 +35,9 @@ Patch5: 	kbd-1.14.1-unicode_start_no_loadkeys.patch
 Patch6: 	kbd-1.14.1-fix-build-extra-progs.patch
 # Accordingly to Belgian keyboard layout, keycode 7 should be paragraph_sign
 Patch7: 	kbd-1.12-be-latin1-paragraph_sign-fix.patch
+# Upstream kbd fixes
+Patch8: 	kbd-1.14.1-add-qwerty-cz.map-keymap.patch
+Patch9: 	kbd-1.14.1-loadunimap-should-use-UNIMAPDIR.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}
 BuildRequires:	bison
 BuildRequires:	flex
@@ -62,6 +65,8 @@ It also includes a number of different fonts and keyboard maps.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
+%patch9 -p1
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{_sourcedir}/kbd-mac-fr-4.1.tar.gz
