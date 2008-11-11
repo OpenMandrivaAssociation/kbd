@@ -1,15 +1,14 @@
 %define kbddir /usr/lib/kbd
-%define mdv_keymaps_ver 20071113
+%define mdv_keymaps_ver 20081111
 
 Name:   	kbd
-Version:	1.12
-Release:	%mkrel 15
+Version:	1.14.1
+Release:	%mkrel 1
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
-URL:    	ftp://ftp.win.tue.nl/pub/linux-local/utils/kbd/
-Source0:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%version.tar.bz2
-Source1:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%version.tar.bz2.sign
+URL:    	ftp://ftp.altlinux.org/pub/people/legion/kbd/
+Source0:	ftp://ftp.altlinux.org/pub/people/legion/kbd/kbd-%version.tar.gz
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source4:	keytable.init
@@ -17,23 +16,23 @@ Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 Source6:	configure_keyboard.sh
 Source7:	setsysfont
 # mandriva keyboard updates
-Patch0: 	kbd-1.12-mandriva.patch
+Patch0: 	kbd-1.14.1-mandriva.patch
 # tilde with twosuperior in french keyboard
 Patch1: 	kbd-1.12-tilde_twosuperior_french_kbd.patch
 # some modifications to cover PPC using Linux keycodes
 Patch2: 	kbd-1.12-ppc_using_linux_keycodes.patch
+# man pages are always installed despite optional programs being disabled
+Patch3: 	kbd-1.14.1-optional_man_always_installed.patch
 # thai support, I tried to convert it from console-tools package
-# (support added by Pablo), using also updated thay_ksym patch from
-# debian and the following patches from:
+# (support added by Pablo), see these patches as reference:
 # http://linux.thai.net/~thep/th-console/console-tools/console-tools-thai_ksym.patch
 # http://linux.thai.net/~thep/th-console/console-data/console-data-thai_orig-1999.08.29.patch
-Patch3: 	kbd-1.12-thai_ksym_deb.patch
+# (note: thai_ksym patch not needed anymore, it's merged in kbd)
 Patch4: 	kbd-1.12-data_thai.patch
-# loadkeys only works as root, and we use unicode_start in configure_keyboard.sh
-Patch5: 	kbd-1.12-unicode_start_no_loadkeys.patch
-# Don't allow unicode_{start,stop} to run if we aren't in a linux vt, as
-# it doesn't make sense and causes bugs if we run it under X
-Patch6: 	kbd-1.12-unicode_only_in_linux_vt.patch
+# avoid kbd scheme for loadkeys, we use unicode_start in configure_keyboard.sh
+Patch5: 	kbd-1.14.1-unicode_start_no_loadkeys.patch
+# fix build of getkeycodes, resizecons, setkeycodes
+Patch6: 	kbd-1.14.1-fix-build-extra-progs.patch
 # Accordingly to Belgian keyboard layout, keycode 7 should be paragraph_sign
 Patch7: 	kbd-1.12-be-latin1-paragraph_sign-fix.patch
 BuildRoot:	%_tmppath/%name-buildroot
@@ -75,7 +74,7 @@ cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
 %build
-./configure --datadir=%kbddir --mandir=%_mandir
+%configure --datadir=%kbddir --mandir=%_mandir
 %make
 
 %install
@@ -134,12 +133,13 @@ bzcat %_sourcedir/keytable.init.ppc.patch | \
 	patch -d %buildroot/%_sysconfdir/rc.d/init.d -p0
 %endif
 
-# some scripts expects setfont and unicode_{start,stop} inside /bin
+# some scripts expects setfont, unicode_{start,stop} and loadkeys inside /bin
 mkdir -p %buildroot/bin
 mv %buildroot/%_bindir/unicode_{start,stop} %buildroot/bin
 ln -s ../../bin/unicode_start %buildroot/%_bindir/unicode_start
 ln -s ../../bin/unicode_stop %buildroot/%_bindir/unicode_stop
-mv %buildroot/%_bindir/setfont %buildroot/bin
+mv %buildroot/%_bindir/{loadkeys,setfont} %buildroot/bin
+ln -s ../../bin/loadkeys %buildroot/%_bindir/loadkeys
 ln -s ../../bin/setfont %buildroot/%_bindir/setfont
 
 mkdir %buildroot/sbin
@@ -165,6 +165,7 @@ rm -rf %buildroot
 %_bindir/getkeycodes
 %_bindir/kbd_mode
 %_bindir/kbdrate
+%_bindir/loadkeys
 %_bindir/loadunimap
 %_bindir/mapscrn
 %_bindir/openvt
