@@ -3,7 +3,7 @@
 
 Name:   	kbd
 Version:	1.14.1
-Release:	%mkrel 2
+Release:	%mkrel 3
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -33,8 +33,8 @@ Patch4: 	kbd-1.12-data_thai.patch
 Patch5: 	kbd-1.14.1-unicode_start_no_loadkeys.patch
 # fix build of getkeycodes, resizecons, setkeycodes
 Patch6: 	kbd-1.14.1-fix-build-extra-progs.patch
-# Accordingly to Belgian keyboard layout, keycode 7 should be paragraph_sign
-Patch7: 	kbd-1.12-be-latin1-paragraph_sign-fix.patch
+# Accordingly to Belgian keyboard layout, keycode 7 should be 8859-1 'section'
+Patch7: 	kbd-1.14.1-be-latin1-keycode7-fix.patch
 # Upstream kbd fixes
 Patch8: 	kbd-1.14.1-add-qwerty-cz.map-keymap.patch
 Patch9: 	kbd-1.14.1-loadunimap-should-use-UNIMAPDIR.patch
