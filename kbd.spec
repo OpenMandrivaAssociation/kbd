@@ -1,9 +1,9 @@
 %define kbddir /usr/lib/kbd
-%define mdv_keymaps_ver 20081111
+%define mdv_keymaps_ver 20081113
 
 Name:   	kbd
 Version:	1.14.1
-Release:	%mkrel 3
+Release:	%mkrel 4
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
