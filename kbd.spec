@@ -3,7 +3,7 @@
 
 Name:   	kbd
 Version:	1.14.1
-Release:	%mkrel 4
+Release:	%mkrel 5
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -48,6 +48,12 @@ BuildRequires:	make
 Conflicts:	initscripts <= 8.54-2mdv2008.0
 Conflicts:	util-linux < 2.13
 Obsoletes:	console-tools <= 0.2.3-64
+Obsoletes:	libconsole0 <= 0.2.3-64
+Obsoletes:	libconsole0-devel <= 0.2.3-64
+Obsoletes:	libconsole0-static-devel <= 0.2.3-64
+Obsoletes:	lib64console0 <= 0.2.3-64
+Obsoletes:	lib64console0-devel <= 0.2.3-64
+Obsoletes:	lib64console0-static-devel <= 0.2.3-64
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
