@@ -2,8 +2,8 @@
 %define mdv_keymaps_ver 20081113
 
 Name:   	kbd
-Version:	1.14.1
-Release:	%mkrel 5
+Version:	1.15
+Release:	%mkrel 1
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -21,8 +21,6 @@ Patch0: 	kbd-1.14.1-mandriva.patch
 Patch1: 	kbd-1.12-tilde_twosuperior_french_kbd.patch
 # some modifications to cover PPC using Linux keycodes
 Patch2: 	kbd-1.12-ppc_using_linux_keycodes.patch
-# man pages are always installed despite optional programs being disabled
-Patch3: 	kbd-1.14.1-optional_man_always_installed.patch
 # thai support, I tried to convert it from console-tools package
 # (support added by Pablo), see these patches as reference:
 # http://linux.thai.net/~thep/th-console/console-tools/console-tools-thai_ksym.patch
@@ -31,14 +29,8 @@ Patch3: 	kbd-1.14.1-optional_man_always_installed.patch
 Patch4: 	kbd-1.12-data_thai.patch
 # avoid kbd scheme for loadkeys, we use unicode_start in configure_keyboard.sh
 Patch5: 	kbd-1.14.1-unicode_start_no_loadkeys.patch
-# fix build of getkeycodes, resizecons, setkeycodes
-Patch6: 	kbd-1.14.1-fix-build-extra-progs.patch
-# Accordingly to Belgian keyboard layout, keycode 7 should be 8859-1 'section'
-Patch7: 	kbd-1.14.1-be-latin1-keycode7-fix.patch
+Patch6:		kbd-1.14.1-format_not_a_string_literal_and_no_format_arguments.diff
 # Upstream kbd fixes
-Patch8: 	kbd-1.14.1-add-qwerty-cz.map-keymap.patch
-Patch9: 	kbd-1.14.1-loadunimap-should-use-UNIMAPDIR.patch
-BuildRoot:	%{_tmppath}/%{name}-%{version}
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gcc
@@ -54,25 +46,23 @@ Obsoletes:	libconsole0-static-devel <= 0.2.3-64
 Obsoletes:	lib64console0 <= 0.2.3-64
 Obsoletes:	lib64console0-devel <= 0.2.3-64
 Obsoletes:	lib64console0-static-devel <= 0.2.3-64
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
 It also includes a number of different fonts and keyboard maps.
 
 %prep
+
 %setup -q -a 2
 %patch0 -p1
 %patch1 -p1
 %ifarch ppc ppc64
 %patch2 -p1
 %endif
-%patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
+%patch6 -p0
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{_sourcedir}/kbd-mac-fr-4.1.tar.gz
@@ -86,12 +76,19 @@ cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
 %build
-%configure --datadir=%{kbddir} --mandir=%{_mandir} --enable-nls
+autoreconf -fis
+%configure2_5x \
+    --datadir=%{kbddir} \
+    --mandir=%{_mandir} \
+    --enable-nls \
+    --localedir=%{_datadir}/locale
+
 %make
 
 %install
 rm -rf %{buildroot}
-make DESTDIR=%{buildroot} install
+
+%makeinstall_std
 
 # keep some keymap/consolefonts compatibility with console-tools
 ln -s fr-latin9.map.gz \
@@ -156,6 +153,9 @@ ln -s ../../bin/setfont %{buildroot}/%{_bindir}/setfont
 
 mkdir %{buildroot}/sbin
 install -m 0755 %{_sourcedir}/setsysfont %{buildroot}/sbin
+
+# fix locales (duh!, bork, bork)
+mv %{buildroot}%{kbddir}/locale %{buildroot}%{_datadir}/
 
 %find_lang %{name}
 
