@@ -3,7 +3,7 @@
 
 Name:   	kbd
 Version:	1.15
-Release:	%mkrel 1
+Release:	%mkrel 2
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -16,11 +16,13 @@ Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 Source6:	configure_keyboard.sh
 Source7:	setsysfont
 # mandriva keyboard updates
-Patch0: 	kbd-1.14.1-mandriva.patch
+Patch0: 	kbd-1.15-mandriva.patch
 # tilde with twosuperior in french keyboard
-Patch1: 	kbd-1.12-tilde_twosuperior_french_kbd.patch
+Patch1: 	kbd-1.15-tilde_twosuperior_french_kbd.patch
 # some modifications to cover PPC using Linux keycodes
 Patch2: 	kbd-1.12-ppc_using_linux_keycodes.patch
+# fix build problems with -Werror=format-security
+Patch3: 	kbd-1.15-format-security.patch
 # thai support, I tried to convert it from console-tools package
 # (support added by Pablo), see these patches as reference:
 # http://linux.thai.net/~thep/th-console/console-tools/console-tools-thai_ksym.patch
@@ -29,8 +31,6 @@ Patch2: 	kbd-1.12-ppc_using_linux_keycodes.patch
 Patch4: 	kbd-1.12-data_thai.patch
 # avoid kbd scheme for loadkeys, we use unicode_start in configure_keyboard.sh
 Patch5: 	kbd-1.14.1-unicode_start_no_loadkeys.patch
-Patch6:		kbd-1.14.1-format_not_a_string_literal_and_no_format_arguments.diff
-# Upstream kbd fixes
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gcc
@@ -46,23 +46,22 @@ Obsoletes:	libconsole0-static-devel <= 0.2.3-64
 Obsoletes:	lib64console0 <= 0.2.3-64
 Obsoletes:	lib64console0-devel <= 0.2.3-64
 Obsoletes:	lib64console0-static-devel <= 0.2.3-64
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
 It also includes a number of different fonts and keyboard maps.
 
 %prep
-
 %setup -q -a 2
 %patch0 -p1
 %patch1 -p1
 %ifarch ppc ppc64
 %patch2 -p1
 %endif
+%patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p0
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{_sourcedir}/kbd-mac-fr-4.1.tar.gz
@@ -76,19 +75,17 @@ cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
 %build
-autoreconf -fis
-%configure2_5x \
-    --datadir=%{kbddir} \
-    --mandir=%{_mandir} \
-    --enable-nls \
-    --localedir=%{_datadir}/locale
-
+%configure --datadir=%{kbddir} \
+           --mandir=%{_mandir} \
+           --enable-nls \
+           --localedir=%{_datadir}/locale
 %make
 
 %install
 rm -rf %{buildroot}
-
-%makeinstall_std
+%makeinstall_std \
+	localedir=%{buildroot}%{_datadir}/locale \
+	gnulocaledir=%{buildroot}%{_datadir}/locale
 
 # keep some keymap/consolefonts compatibility with console-tools
 ln -s fr-latin9.map.gz \
@@ -153,9 +150,6 @@ ln -s ../../bin/setfont %{buildroot}/%{_bindir}/setfont
 
 mkdir %{buildroot}/sbin
 install -m 0755 %{_sourcedir}/setsysfont %{buildroot}/sbin
-
-# fix locales (duh!, bork, bork)
-mv %{buildroot}%{kbddir}/locale %{buildroot}%{_datadir}/
 
 %find_lang %{name}
 
