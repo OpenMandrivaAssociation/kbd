@@ -75,10 +75,10 @@ cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
 %build
-%configure --datadir=%{kbddir} \
-           --mandir=%{_mandir} \
-           --enable-nls \
-           --localedir=%{_datadir}/locale
+%configure2_5x --datadir=%{kbddir} \
+               --mandir=%{_mandir} \
+               --enable-nls \
+               --localedir=%{_datadir}/locale
 %make
 
 %install
