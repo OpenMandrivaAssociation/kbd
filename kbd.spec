@@ -3,7 +3,7 @@
 
 Name:   	kbd
 Version:	1.15
-Release:	%mkrel 3
+Release:	%mkrel 4
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
