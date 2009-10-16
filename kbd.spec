@@ -3,7 +3,7 @@
 
 Name:   	kbd
 Version:	1.15
-Release:	%mkrel 4
+Release:	%mkrel 5
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -11,7 +11,6 @@ URL:    	ftp://ftp.altlinux.org/pub/people/legion/kbd/
 Source0:	ftp://ftp.altlinux.org/pub/people/legion/kbd/kbd-%{version}.tar.gz
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
-Source4:	keytable.init
 Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 Source6:	configure_keyboard.sh
 Source7:	setsysfont
@@ -31,6 +30,8 @@ Patch3: 	kbd-1.15-format-security.patch
 Patch4: 	kbd-1.12-data_thai.patch
 # avoid kbd scheme for loadkeys, we use unicode_start in configure_keyboard.sh
 Patch5: 	kbd-1.14.1-unicode_start_no_loadkeys.patch
+# (fc) remove unneeded calls in unicode_stop
+Patch6:		kbd-1.15-remove-unneeded-calls.patch
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gcc
@@ -62,6 +63,7 @@ It also includes a number of different fonts and keyboard maps.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{_sourcedir}/kbd-mac-fr-4.1.tar.gz
@@ -132,19 +134,14 @@ install -m 0755 %{_sourcedir}/configure_keyboard.sh \
 	%{buildroot}/%{_sysconfdir}/profile.d/configure_keyboard.sh
 
 mkdir -p %{buildroot}/%{_sysconfdir}/rc.d/init.d
-install -m 0755 %{_sourcedir}/keytable.init \
-	%{buildroot}/%{_sysconfdir}/rc.d/init.d/keytable
-%ifarch ppc ppc64
-bzcat %{_sourcedir}/keytable.init.ppc.patch | \
-	patch -d %{buildroot}/%{_sysconfdir}/rc.d/init.d -p0
-%endif
 
 # some scripts expects setfont, unicode_{start,stop} and loadkeys inside /bin
 mkdir -p %{buildroot}/bin
 mv %{buildroot}/%{_bindir}/unicode_{start,stop} %{buildroot}/bin
 ln -s ../../bin/unicode_start %{buildroot}/%{_bindir}/unicode_start
 ln -s ../../bin/unicode_stop %{buildroot}/%{_bindir}/unicode_stop
-mv %{buildroot}/%{_bindir}/{loadkeys,setfont} %{buildroot}/bin
+mv %{buildroot}/%{_bindir}/{loadkeys,setfont,kbd_mode} %{buildroot}/bin
+ln -s ../../bin/kbd_mode %{buildroot}/%{_bindir}/kbd_mode
 ln -s ../../bin/loadkeys %{buildroot}/%{_bindir}/loadkeys
 ln -s ../../bin/setfont %{buildroot}/%{_bindir}/setfont
 
@@ -156,11 +153,10 @@ install -m 0755 %{_sourcedir}/setsysfont %{buildroot}/sbin
 %clean
 rm -rf %{buildroot}
 
-%post
-%_post_service keytable
+%triggerun -- kbd < 1.15-5mdv
+  /sbin/chkconfig --del keytable
+exit 0
 
-%preun
-%_preun_service keytable
 
 %files -f %{name}.lang
 %defattr(0755,root,root,0755)
@@ -191,11 +187,11 @@ rm -rf %{buildroot}
 %{_bindir}/unicode_start
 %{_bindir}/unicode_stop
 %config(noreplace) %{_sysconfdir}/profile.d/configure_keyboard.sh
-%config(noreplace) %{_sysconfdir}/rc.d/init.d/keytable
 /bin/loadkeys
 /bin/setfont
 /bin/unicode_start
 /bin/unicode_stop
+/bin/kbd_mode
 /sbin/setsysfont
 %defattr(0644,root,root,0755)
 %{_mandir}/man1/chvt.1*
