@@ -130,8 +130,8 @@ do
 done
 
 mkdir -p %{buildroot}/%{_sysconfdir}/profile.d
-install -m 0755 %{_sourcedir}/configure_keyboard.sh \
-	%{buildroot}/%{_sysconfdir}/profile.d/configure_keyboard.sh
+install -m 644 %{_sourcedir}/configure_keyboard.sh \
+	%{buildroot}/%{_sysconfdir}/profile.d/40configure_keyboard.sh
 
 mkdir -p %{buildroot}/%{_sysconfdir}/rc.d/init.d
 
