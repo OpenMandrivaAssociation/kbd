@@ -2,8 +2,8 @@
 %define mdv_keymaps_ver 20081113
 
 Name:   	kbd
-Version:	1.15
-Release:	%mkrel 5
+Version:	1.15.1
+Release:	%mkrel 1
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -20,8 +20,6 @@ Patch0: 	kbd-1.15-mandriva.patch
 Patch1: 	kbd-1.15-tilde_twosuperior_french_kbd.patch
 # some modifications to cover PPC using Linux keycodes
 Patch2: 	kbd-1.12-ppc_using_linux_keycodes.patch
-# fix build problems with -Werror=format-security
-Patch3: 	kbd-1.15-format-security.patch
 # thai support, I tried to convert it from console-tools package
 # (support added by Pablo), see these patches as reference:
 # http://linux.thai.net/~thep/th-console/console-tools/console-tools-thai_ksym.patch
@@ -60,7 +58,6 @@ It also includes a number of different fonts and keyboard maps.
 %ifarch ppc ppc64
 %patch2 -p1
 %endif
-%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
@@ -77,6 +74,8 @@ cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
 %build
+autoreconf -fiv
+
 %configure2_5x --datadir=%{kbddir} \
                --mandir=%{_mandir} \
                --enable-nls \
@@ -186,7 +185,7 @@ exit 0
 %{_bindir}/showkey
 %{_bindir}/unicode_start
 %{_bindir}/unicode_stop
-%config(noreplace) %{_sysconfdir}/profile.d/configure_keyboard.sh
+%config(noreplace) %{_sysconfdir}/profile.d/40configure_keyboard.sh
 /bin/loadkeys
 /bin/setfont
 /bin/unicode_start
