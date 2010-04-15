@@ -2,13 +2,13 @@
 %define mdv_keymaps_ver 20081113
 
 Name:   	kbd
-Version:	1.15.1
+Version:	1.15.2
 Release:	%mkrel 1
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
-URL:    	ftp://ftp.altlinux.org/pub/people/legion/kbd/
-Source0:	ftp://ftp.altlinux.org/pub/people/legion/kbd/kbd-%{version}.tar.gz
+URL:    	ftp://ftp.kernel.org/pub/linux/utils/kbd/
+Source0:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%{version}.tar.bz2
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
@@ -74,8 +74,6 @@ cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
 %build
-autoreconf -fiv
-
 %configure2_5x --datadir=%{kbddir} \
                --mandir=%{_mandir} \
                --enable-nls \
@@ -85,8 +83,7 @@ autoreconf -fiv
 %install
 rm -rf %{buildroot}
 %makeinstall_std \
-	localedir=%{buildroot}%{_datadir}/locale \
-	gnulocaledir=%{buildroot}%{_datadir}/locale
+	localedir=%{_datadir}/locale
 
 # keep some keymap/consolefonts compatibility with console-tools
 ln -s fr-latin9.map.gz \
