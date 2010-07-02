@@ -3,7 +3,7 @@
 
 Name:   	kbd
 Version:	1.15.2
-Release:	%mkrel 1
+Release:	%mkrel 2
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -30,6 +30,8 @@ Patch4: 	kbd-1.12-data_thai.patch
 Patch5: 	kbd-1.14.1-unicode_start_no_loadkeys.patch
 # (fc) remove unneeded calls in unicode_stop
 Patch6:		kbd-1.15-remove-unneeded-calls.patch
+# (fc) allow to wait for VT switch in userland (Novell bug #540482) (Gentoo)
+Patch7:		kbd-1.12-chvt-userwait.patch
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gcc
@@ -61,6 +63,7 @@ It also includes a number of different fonts and keyboard maps.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{_sourcedir}/kbd-mac-fr-4.1.tar.gz
