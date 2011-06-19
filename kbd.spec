@@ -2,8 +2,8 @@
 %define mdv_keymaps_ver 20081113
 
 Name:   	kbd
-Version:	1.15.2
-Release:	%mkrel 4
+Version:	1.15.3
+Release:	%mkrel 1
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -32,6 +32,8 @@ Patch5: 	kbd-1.14.1-unicode_start_no_loadkeys.patch
 Patch6:		kbd-1.15-remove-unneeded-calls.patch
 # (fc) allow to wait for VT switch in userland (Novell bug #540482) (Gentoo)
 Patch7:		kbd-1.12-chvt-userwait.patch
+# (tpg) fix es translation, probably will be dropped on next release
+Patch8:		kbd-1.15.3-fix-es-translation.patch
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gcc
@@ -64,6 +66,7 @@ It also includes a number of different fonts and keyboard maps.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{_sourcedir}/kbd-mac-fr-4.1.tar.gz
@@ -77,10 +80,14 @@ cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
 %build
-%configure2_5x --datadir=%{kbddir} \
-               --mandir=%{_mandir} \
-               --enable-nls \
-               --localedir=%{_datadir}/locale
+%configure2_5x	\
+	--datadir=%{kbddir} \
+	--mandir=%{_mandir} \
+	--enable-nls \
+	--localedir=%{_datadir}/locale \
+	--enable-optional-progs \
+	--disable-rpath
+
 %make
 
 %install
@@ -185,6 +192,17 @@ exit 0
 %{_bindir}/showkey
 %{_bindir}/unicode_start
 %{_bindir}/unicode_stop
+%{_bindir}/clrunimap
+%{_bindir}/getunimap
+%{_bindir}/kbdinfo
+%{_bindir}/outpsfheader
+%{_bindir}/screendump
+%{_bindir}/setlogcons
+%{_bindir}/setpalette
+%{_bindir}/setvesablank
+%{_bindir}/setvtrgb
+%{_bindir}/spawn_console
+%{_bindir}/spawn_login
 %config(noreplace) %{_sysconfdir}/profile.d/40configure_keyboard.sh
 /bin/loadkeys
 /bin/setfont
@@ -218,4 +236,14 @@ exit 0
 %{_mandir}/man8/setfont.8*
 %{_mandir}/man8/setkeycodes.8*
 %{_mandir}/man8/showconsolefont.8*
+%{_mandir}/man1/codepage.1*
+%{_mandir}/man1/screendump.1*
+%{_mandir}/man1/splitfont.1*
+%{_mandir}/man8/clrunimap.8*
+%{_mandir}/man8/getunimap.8*
+%{_mandir}/man8/mk_modmap.8*
+%{_mandir}/man8/setlogcons.8*
+%{_mandir}/man8/setvesablank.8*
+%{_mandir}/man8/setvtrgb.8*
+%{_mandir}/man8/vcstime.8*
 %{kbddir}
