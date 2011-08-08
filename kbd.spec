@@ -3,7 +3,7 @@
 
 Name:   	kbd
 Version:	1.15.3
-Release:	%mkrel 1
+Release:	%mkrel 2
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
@@ -34,6 +34,8 @@ Patch6:		kbd-1.15-remove-unneeded-calls.patch
 Patch7:		kbd-1.12-chvt-userwait.patch
 # (tpg) fix es translation, probably will be dropped on next release
 Patch8:		kbd-1.15.3-fix-es-translation.patch
+# fix broke in 1.15.3 loadkeys
+Patch9:		kbd-1.15.3-loadkeys.patch
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gcc
@@ -67,6 +69,7 @@ It also includes a number of different fonts and keyboard maps.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{_sourcedir}/kbd-mac-fr-4.1.tar.gz
