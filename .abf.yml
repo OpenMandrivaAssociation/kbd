@@ -1,7 +1,5 @@
 sources:
-  "configure_keyboard.sh:"	d10a5c21bf71b9f5d9baf728ec1de7a012b46884
-  "kbd-1.15.3.tar.bz2:"	388cd57a49be7dae44fe2d5aaced1a31e69db17b
-  "kbd-mac-fr-4.1.tar.gz:"	8d5ffc91bff2f713d878c8fc6c73f8b5d97b3c07
-  "kbd-mdv-keymaps-20081113.tar.bz2:"	09dfd9f276df209d29193f97e6cba547092e3e7e
-  "setsysfont:"	3a3ab24d4265e93393c4cc7db64337ee6e5e7ad0
-  "ucwfonts.tar.bz2:"	1ae55bab524e03a86d751c476acbef9075ed2108
+  "kbd-1.15.3.tar.bz2": 388cd57a49be7dae44fe2d5aaced1a31e69db17b
+  "kbd-mac-fr-4.1.tar.gz": 8d5ffc91bff2f713d878c8fc6c73f8b5d97b3c07
+  "kbd-mdv-keymaps-20081113.tar.bz2": 09dfd9f276df209d29193f97e6cba547092e3e7e
+  "ucwfonts.tar.bz2": 1ae55bab524e03a86d751c476acbef9075ed2108
