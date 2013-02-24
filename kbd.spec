@@ -1,4 +1,4 @@
-%define kbddir /usr/lib/kbd
+%define kbddir /lib/kbd
 %define mdv_keymaps_ver 20081113
 
 Name:		kbd
