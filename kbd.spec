@@ -5,7 +5,7 @@ Name:		kbd
 Version:	1.15.5
 Release:	1
 Summary:	Keyboard and console utilities for Linux
-License:	GPL
+License:	GPLv2+
 Group:		Terminals
 URL:		http://www.kbd-project.org/
 Source0:	ftp://ftp.altlinux.org/pub/people/legion/kbd/%{name}-%{version}.tar.gz
