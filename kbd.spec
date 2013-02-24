@@ -225,6 +225,7 @@ exit 0
 %{_mandir}/man1/showkey.1*
 %{_mandir}/man1/unicode_start.1*
 %{_mandir}/man1/unicode_stop.1*
+%{_mandir}/man1/vlock.1*
 %{_mandir}/man5/keymaps.5*
 %{_mandir}/man8/getkeycodes.8*
 %{_mandir}/man8/kbdrate.8*
@@ -243,6 +244,5 @@ exit 0
 %{_mandir}/man8/setlogcons.8*
 %{_mandir}/man8/setvesablank.8*
 %{_mandir}/man8/setvtrgb.8*
-%{_mandir}/man8/vlock.8*
 %{_mandir}/man8/vcstime.8*
 %{kbddir}
