@@ -66,13 +66,13 @@ It also includes a number of different fonts and keyboard maps.
 %patch7 -p1
 
 mkdir mac_frnew; cd mac_frnew
-tar -zxf %{_sourcedir}/kbd-mac-fr-4.1.tar.gz
+tar -zxf %{SOURCE5}
 gunzip mac-fr-ext_new.kmap.gz
 mv mac-fr-ext_new.kmap ../data/keymaps/mac/all/mac-fr-ext_new.map
 cd ..; rm -rf mac_frnew
 
 pushd data
-tar -jxf %{_sourcedir}/kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
+tar -jxf %{SOURCE6}/kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
@@ -132,9 +132,7 @@ do
 	gzip %{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.map
 done
 
-mkdir -p %{buildroot}/%{_sysconfdir}/profile.d
-install -m 644 %{_sourcedir}/configure_keyboard.sh \
-	%{buildroot}/%{_sysconfdir}/profile.d/40configure_keyboard.sh
+install -m644 %{SOURCE6} -D %{buildroot}%{_sysconfdir}/profile.d/40configure_keyboard.sh
 
 mkdir -p %{buildroot}/%{_sysconfdir}/rc.d/init.d
 
@@ -148,8 +146,7 @@ ln -s ../../bin/kbd_mode %{buildroot}/%{_bindir}/kbd_mode
 ln -s ../../bin/loadkeys %{buildroot}/%{_bindir}/loadkeys
 ln -s ../../bin/setfont %{buildroot}/%{_bindir}/setfont
 
-mkdir %{buildroot}/sbin
-install -m 0755 %{_sourcedir}/setsysfont %{buildroot}/sbin
+install -m755 %{SOURCE7} -D %{buildroot}/sbin/setsysfont
 
 %find_lang %{name}
 
