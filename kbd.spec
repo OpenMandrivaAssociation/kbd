@@ -2,13 +2,13 @@
 %define mdv_keymaps_ver 20081113
 
 Name:   	kbd
-Version:	1.15.3
-Release:	%mkrel 3
+Version:	1.15.5
+Release:	1
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
 Group:  	Terminals
-URL:    	ftp://ftp.kernel.org/pub/linux/utils/kbd/
-Source0:	ftp://ftp.kernel.org/pub/linux/utils/kbd/kbd-%{version}.tar.bz2
+URL:    	http://www.kbd-project.org/
+Source0:	ftp://ftp.altlinux.org/pub/people/legion/kbd/%{name}-%{version}.tar.gz
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
@@ -32,10 +32,6 @@ Patch5: 	kbd-1.14.1-unicode_start_no_loadkeys.patch
 Patch6:		kbd-1.15-remove-unneeded-calls.patch
 # (fc) allow to wait for VT switch in userland (Novell bug #540482) (Gentoo)
 Patch7:		kbd-1.12-chvt-userwait.patch
-# (tpg) fix es translation, probably will be dropped on next release
-Patch8:		kbd-1.15.3-fix-es-translation.patch
-# fix broke in 1.15.3 loadkeys
-Patch9:		kbd-1.15.3-loadkeys.patch
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gcc
@@ -68,8 +64,6 @@ It also includes a number of different fonts and keyboard maps.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
-%patch9 -p1
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{_sourcedir}/kbd-mac-fr-4.1.tar.gz
@@ -184,7 +178,7 @@ exit 0
 %{_bindir}/psfgettable
 %{_bindir}/psfstriptable
 %{_bindir}/psfxtable
-%ifarch %{ix86}
+%ifarch %{ix86} x86_64
 %{_bindir}/resizecons
 %endif
 %{_bindir}/setfont
@@ -206,6 +200,7 @@ exit 0
 %{_bindir}/setvtrgb
 %{_bindir}/spawn_console
 %{_bindir}/spawn_login
+%{_bindir}/vlock
 %config(noreplace) %{_sysconfdir}/profile.d/40configure_keyboard.sh
 /bin/loadkeys
 /bin/setfont
@@ -248,5 +243,6 @@ exit 0
 %{_mandir}/man8/setlogcons.8*
 %{_mandir}/man8/setvesablank.8*
 %{_mandir}/man8/setvtrgb.8*
+%{_mandir}/man8/vlock.8*
 %{_mandir}/man8/vcstime.8*
 %{kbddir}
