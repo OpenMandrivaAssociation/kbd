@@ -65,13 +65,13 @@ It also includes a number of different fonts and keyboard maps.
 %patch7 -p1
 
 mkdir mac_frnew; cd mac_frnew
-tar -zxf %{SOURCE5}
+tar -zxf %{SOURCE3}
 gunzip mac-fr-ext_new.kmap.gz
 mv mac-fr-ext_new.kmap ../data/keymaps/mac/all/mac-fr-ext_new.map
 cd ..; rm -rf mac_frnew
 
 pushd data
-tar -jxf %{SOURCE6}
+tar -jxf %{SOURCE5}
 cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
@@ -195,7 +195,6 @@ exit 0
 /bin/unicode_stop
 /bin/kbd_mode
 /sbin/setsysfont
-%defattr(0644,root,root,0755)
 %{_mandir}/man1/chvt.1*
 %{_mandir}/man1/deallocvt.1*
 %{_mandir}/man1/dumpkeys.1*
