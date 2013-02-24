@@ -13,7 +13,6 @@ Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 Source6:	configure_keyboard.sh
-Source7:	setsysfont
 
 # From Fedora
 Source102:	kbd-latsun-fonts.tar.bz2
@@ -216,8 +215,6 @@ while read line; do
   ckbcomp "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbddir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
 done < layouts-variants.lst
 
-install -m755 %{SOURCE7} -D %{buildroot}/sbin/setsysfont
-
 %find_lang %{name}
 
 %triggerun -- kbd < 1.15-5mdv
@@ -265,7 +262,6 @@ exit 0
 /bin/setfont
 /bin/unicode_start
 /bin/unicode_stop
-/sbin/setsysfont
 %{_mandir}/man1/chvt.1*
 %{_mandir}/man1/deallocvt.1*
 %{_mandir}/man1/dumpkeys.1*
