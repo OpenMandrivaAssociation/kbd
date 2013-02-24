@@ -32,6 +32,21 @@ Patch5:		kbd-1.14.1-unicode_start_no_loadkeys.patch
 Patch6:		kbd-1.15-remove-unneeded-calls.patch
 # (fc) allow to wait for VT switch in userland (Novell bug #540482) (Gentoo)
 Patch7:		kbd-1.12-chvt-userwait.patch
+
+# Fedora patches
+# Patch0: puts additional information into man pages
+Patch100:         kbd-1.15-keycodes-man.patch
+# Patch1: sparc modifications
+Patch101:         kbd-1.15-sparc.patch
+# Patch2: adds default unicode font to unicode_start script
+Patch102:         kbd-1.15-unicode_start.patch
+# Patch3: add missing dumpkeys option to man page
+Patch103:         kbd-1.15.3-dumpkeys-man.patch
+# Patch4: fixes loadkeys regression (already upstream)
+Patch104:         kbd-1.15.5-loadkeys-regression.patch
+# Patch5: fixes decimal separator in Swiss German keyboard layout, bz 882529
+Patch105:         kbd-1.15.5-sg-decimal-separator.patch
+
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gcc
@@ -63,6 +78,13 @@ It also includes a number of different fonts and keyboard maps.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+
+%patch100 -p1 -b .keycodes-man~
+%patch101 -p1 -b .sparc~
+%patch102 -p1 -b .unicode_start~
+%patch103 -p1 -b .dumpkeys-man~
+%patch104 -p1 -b .loadkeys-regression~
+%patch105 -p1 -b .sg-decimal-separator~
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{SOURCE3}
