@@ -14,6 +14,14 @@ Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 Source6:	configure_keyboard.sh
 Source7:	setsysfont
+
+# From Fedora
+Source102:	kbd-latsun-fonts.tar.bz2
+Source103:	kbd-latarcyrheb-16-fixed.tar.bz2
+Source104:	fr-dvorak.tar.bz2
+Source105:	kbd-latarcyrheb-32.tar.bz2
+Source106:	xml2lst.pl
+
 # mandriva keyboard updates
 Patch0:		kbd-1.15-mandriva.patch
 # tilde with twosuperior in french keyboard
@@ -53,6 +61,8 @@ BuildRequires:	gcc
 BuildRequires:	gettext-devel
 BuildRequires:	glibc-devel
 BuildRequires:	make
+BuildRequires:  console-setup pkgconfig(xkeyboard-config)
+
 Conflicts:	initscripts <= 8.54-2mdv2008.0
 Conflicts:	util-linux < 2.13
 Obsoletes:	console-tools <= 0.2.3-64
@@ -68,7 +78,9 @@ This package contains utilities to load console fonts and keyboard maps.
 It also includes a number of different fonts and keyboard maps.
 
 %prep
-%setup -q -a 2
+%setup -q -a 2  -a 102 -a 103 -a 104 -a 105
+cp -fp %{SOURCE106} .
+
 %patch0 -p1
 %patch1 -p1
 %ifarch ppc ppc64
@@ -97,6 +109,34 @@ tar -jxf %{SOURCE5}
 cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
+# 7-bit maps are obsolete; so are non-euro maps
+pushd data/keymaps/i386
+mv qwerty/fi.map qwerty/fi-old.map
+cp qwerty/fi-latin9.map qwerty/fi.map
+cp qwerty/pt-latin9.map qwerty/pt.map
+cp qwerty/sv-latin1.map qwerty/se-latin1.map
+
+mv azerty/fr.map azerty/fr-old.map
+cp azerty/fr-latin9.map azerty/fr.map
+
+cp azerty/fr-latin9.map azerty/fr-latin0.map # legacy alias
+
+# Rename conflicting keymaps
+mv dvorak/no.map dvorak/no-dvorak.map
+mv fgGIod/trf.map fgGIod/trf-fgGIod.map
+mv olpc/es.map olpc/es-olpc.map
+mv olpc/pt.map olpc/pt-olpc.map
+mv qwerty/cz.map qwerty/cz-qwerty.map
+popd
+
+# remove obsolete "gr" translation
+pushd po
+rm -f gr.po gr.gmo
+popd
+
+# Convert to utf-8
+iconv -f iso-8859-1 -t utf-8 < "ChangeLog" > "ChangeLog_"
+mv "ChangeLog_" "ChangeLog"
 %build
 %configure2_5x	--datadir=%{kbddir} \
 		--localedir=%{_localedir} \
@@ -110,8 +150,6 @@ popd
 %makeinstall_std localedir=%{_localedir}
 
 # keep some keymap/consolefonts compatibility with console-tools
-ln -s fr-latin9.map.gz \
-	%{buildroot}%{kbddir}/keymaps/i386/azerty/fr-latin0.map.gz
 ln -s us-acentos.map.gz \
 	%{buildroot}%{kbddir}/keymaps/i386/qwerty/us-intl.map.gz
 ln -s mac-us.map.gz \
@@ -132,10 +170,18 @@ ln -s mac-us.map.gz \
 	%{buildroot}%{kbddir}/keymaps/mac/all/mac-jp106.map.gz
 ln -s iso07u-16.psfu.gz \
 	%{buildroot}%{kbddir}/consolefonts/iso07.f16.psfu.gz
-ln -s lat2-16.psfu.gz \
-	%{buildroot}%{kbddir}/consolefonts/lat2-sun16.psfu.gz
 ln -s lat5-16.psfu.gz \
 	%{buildroot}%{kbddir}/consolefonts/lat5u-16.psfu.gz
+
+# ro_win.map.gz is useless
+rm %{buildroot}%{kbddir}/keymaps/i386/qwerty/ro_win.map.gz
+
+# Create additional name for Serbian latin keyboard
+ln -s sr-cy.map.gz %{buildroot}%{kbddir}/keymaps/i386/qwerty/sr-latin.map.gz
+
+# The rhpl keyboard layout table is indexed by kbd layout names, so we need a
+# Korean keyboard
+ln -s us.map.gz %{buildroot}%{kbddir}/keymaps/i386/qwerty/ko.map.gz
 
 # Our initscripts/drakx-kbd-mouse-x11 may want to load these directly as
 # they were like this when using console-tools (GRP_TOGGLE), so we do
@@ -151,17 +197,24 @@ done
 
 install -m644 %{SOURCE6} -D %{buildroot}%{_sysconfdir}/profile.d/40configure_keyboard.sh
 
-mkdir -p %{buildroot}/%{_sysconfdir}/rc.d/init.d
-
-# some scripts expects setfont, unicode_{start,stop} and loadkeys inside /bin
+# Move binaries which we use before /usr is mounted from %{_bindir} to /bin.
 mkdir -p %{buildroot}/bin
-mv %{buildroot}/%{_bindir}/unicode_{start,stop} %{buildroot}/bin
-ln -s ../../bin/unicode_start %{buildroot}/%{_bindir}/unicode_start
-ln -s ../../bin/unicode_stop %{buildroot}/%{_bindir}/unicode_stop
-mv %{buildroot}/%{_bindir}/{loadkeys,setfont,kbd_mode} %{buildroot}/bin
-ln -s ../../bin/kbd_mode %{buildroot}/%{_bindir}/kbd_mode
-ln -s ../../bin/loadkeys %{buildroot}/%{_bindir}/loadkeys
-ln -s ../../bin/setfont %{buildroot}/%{_bindir}/setfont
+for binary in setfont dumpkeys kbd_mode unicode_start unicode_stop loadkeys ; do
+  mv %{buildroot}%{_bindir}/$binary %{buildroot}/bin/
+done
+
+# Some microoptimization
+sed -e 's,\<kbd_mode\>,/bin/kbd_mode,g;s,\<setfont\>,/bin/setfont,g' -i \
+        %{buildroot}/bin/unicode_start
+
+# Convert X keyboard layouts to console keymaps
+mkdir -p %{buildroot}%{kbddir}/keymaps/xkb
+perl xml2lst.pl < /usr/share/X11/xkb/rules/base.xml > layouts-variants.lst
+while read line; do
+  XKBLAYOUT=`echo "$line" | cut -d " " -f 1`
+  XKBVARIANT=`echo "$line" | cut -d " " -f 2`
+  ckbcomp "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbddir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
+done < layouts-variants.lst
 
 install -m755 %{SOURCE7} -D %{buildroot}/sbin/setsysfont
 
@@ -175,12 +228,9 @@ exit 0
 %files -f %{name}.lang
 %{_bindir}/chvt
 %{_bindir}/deallocvt
-%{_bindir}/dumpkeys
 %{_bindir}/fgconsole
 %{_bindir}/getkeycodes
-%{_bindir}/kbd_mode
 %{_bindir}/kbdrate
-%{_bindir}/loadkeys
 %{_bindir}/loadunimap
 %{_bindir}/mapscrn
 %{_bindir}/openvt
@@ -191,14 +241,11 @@ exit 0
 %ifarch %{ix86} x86_64
 %{_bindir}/resizecons
 %endif
-%{_bindir}/setfont
 %{_bindir}/setkeycodes
 %{_bindir}/setleds
 %{_bindir}/setmetamode
 %{_bindir}/showconsolefont
 %{_bindir}/showkey
-%{_bindir}/unicode_start
-%{_bindir}/unicode_stop
 %{_bindir}/clrunimap
 %{_bindir}/getunimap
 %{_bindir}/kbdinfo
@@ -212,11 +259,12 @@ exit 0
 %{_bindir}/spawn_login
 %{_bindir}/vlock
 %config(noreplace) %{_sysconfdir}/profile.d/40configure_keyboard.sh
+/bin/dumpkeys
+/bin/kbd_mode
 /bin/loadkeys
 /bin/setfont
 /bin/unicode_start
 /bin/unicode_stop
-/bin/kbd_mode
 /sbin/setsysfont
 %{_mandir}/man1/chvt.1*
 %{_mandir}/man1/deallocvt.1*
