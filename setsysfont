@@ -1,0 +1,61 @@
+#!/bin/sh
+
+PATH=/bin:/usr/bin
+I18NFILE=/etc/sysconfig/i18n
+
+. /etc/rc.d/init.d/functions
+
+case $1 in
+	'') : # Don't do anything, just proceed.
+		;;
+	*)
+
+		DOCDIR=$(ls -d /usr/share/doc/initscripts*)
+		cat << EOF 1>&2
+
+Error: $0 doesn't take any arguments. It reads $I18NFILE
+to set the font in the console.
+
+Read $DOCDIR/sysconfig.txt for detailed documentation of
+$I18NFILE
+
+EOF
+		exit 1 ;;
+esac
+
+# read the system-wide i18n and console settings
+if [ -f $I18NFILE ]; then
+	. $I18NFILE
+fi
+
+# if CHARSET is not defined, try to see what the current
+# locale encoding is (we only want to know if it is UTF-8 or not)
+if [ -z "$CHARSET" ]; then CHARSET="`get_locale_encoding`" ; fi
+
+if [ -x /bin/setfont -o -x /usr/bin/setfont ]; then
+  case "$CHARSET" in
+  UTF-8)
+	if [ -x /usr/bin/unicode_start ] && /sbin/consoletype fg ; then
+		exec unicode_start $SYSFONT $SYSFONTACM
+	fi
+	;;
+  *)
+	if /sbin/consoletype fg ; then
+		# no exec, unicode_stop does not set a font
+		unicode_stop
+	fi
+	if [ -n "$SYSFONT" ]; then
+		ARGS="$SYSFONT"
+		if [ -n "$UNIMAP" ]; then
+			ARGS="$ARGS -u $UNIMAP"
+		fi
+		if [ -n "$SYSFONTACM" ]; then
+			ARGS="$ARGS -m $SYSFONTACM"
+		fi
+		setfont $ARGS
+	fi
+	;;
+  esac
+fi
+
+exit 0
