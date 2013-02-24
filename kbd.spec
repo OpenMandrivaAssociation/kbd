@@ -1,13 +1,13 @@
 %define kbddir /usr/lib/kbd
 %define mdv_keymaps_ver 20081113
 
-Name:   	kbd
+Name:		kbd
 Version:	1.15.5
 Release:	1
 Summary:	Keyboard and console utilities for Linux
 License:	GPL
-Group:  	Terminals
-URL:    	http://www.kbd-project.org/
+Group:		Terminals
+URL:		http://www.kbd-project.org/
 Source0:	ftp://ftp.altlinux.org/pub/people/legion/kbd/%{name}-%{version}.tar.gz
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
@@ -15,19 +15,19 @@ Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 Source6:	configure_keyboard.sh
 Source7:	setsysfont
 # mandriva keyboard updates
-Patch0: 	kbd-1.15-mandriva.patch
+Patch0:		kbd-1.15-mandriva.patch
 # tilde with twosuperior in french keyboard
-Patch1: 	kbd-1.15-tilde_twosuperior_french_kbd.patch
+Patch1:		kbd-1.15-tilde_twosuperior_french_kbd.patch
 # some modifications to cover PPC using Linux keycodes
-Patch2: 	kbd-1.12-ppc_using_linux_keycodes.patch
+Patch2:		kbd-1.12-ppc_using_linux_keycodes.patch
 # thai support, I tried to convert it from console-tools package
 # (support added by Pablo), see these patches as reference:
 # http://linux.thai.net/~thep/th-console/console-tools/console-tools-thai_ksym.patch
 # http://linux.thai.net/~thep/th-console/console-data/console-data-thai_orig-1999.08.29.patch
 # (note: thai_ksym patch not needed anymore, it's merged in kbd)
-Patch4: 	kbd-1.12-data_thai.patch
+Patch4:		kbd-1.12-data_thai.patch
 # avoid kbd scheme for loadkeys, we use unicode_start in configure_keyboard.sh
-Patch5: 	kbd-1.14.1-unicode_start_no_loadkeys.patch
+Patch5:		kbd-1.14.1-unicode_start_no_loadkeys.patch
 # (fc) remove unneeded calls in unicode_stop
 Patch6:		kbd-1.15-remove-unneeded-calls.patch
 # (fc) allow to wait for VT switch in userland (Novell bug #540482) (Gentoo)
@@ -47,7 +47,6 @@ Obsoletes:	libconsole0-static-devel <= 0.2.3-64
 Obsoletes:	lib64console0 <= 0.2.3-64
 Obsoletes:	lib64console0-devel <= 0.2.3-64
 Obsoletes:	lib64console0-static-devel <= 0.2.3-64
-BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
@@ -72,25 +71,20 @@ mv mac-fr-ext_new.kmap ../data/keymaps/mac/all/mac-fr-ext_new.map
 cd ..; rm -rf mac_frnew
 
 pushd data
-tar -jxf %{SOURCE6}/kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
+tar -jxf %{SOURCE6}
 cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
 popd
 
 %build
-%configure2_5x	\
-	--datadir=%{kbddir} \
-	--mandir=%{_mandir} \
-	--enable-nls \
-	--localedir=%{_datadir}/locale \
-	--enable-optional-progs \
-	--disable-rpath
+%configure2_5x	--datadir=%{kbddir} \
+		--enable-nls \
+		--enable-optional-progs \
+		--disable-rpath
 
 %make
 
 %install
-rm -rf %{buildroot}
-%makeinstall_std \
-	localedir=%{_datadir}/locale
+%makeinstall_std
 
 # keep some keymap/consolefonts compatibility with console-tools
 ln -s fr-latin9.map.gz \
@@ -150,16 +144,12 @@ install -m755 %{SOURCE7} -D %{buildroot}/sbin/setsysfont
 
 %find_lang %{name}
 
-%clean
-rm -rf %{buildroot}
-
 %triggerun -- kbd < 1.15-5mdv
   /sbin/chkconfig --del keytable
 exit 0
 
 
 %files -f %{name}.lang
-%defattr(0755,root,root,0755)
 %{_bindir}/chvt
 %{_bindir}/deallocvt
 %{_bindir}/dumpkeys
