@@ -77,6 +77,7 @@ popd
 
 %build
 %configure2_5x	--datadir=%{kbddir} \
+		--localedir=%{_localedir} \
 		--enable-nls \
 		--enable-optional-progs \
 		--disable-rpath
@@ -84,7 +85,7 @@ popd
 %make
 
 %install
-%makeinstall_std
+%makeinstall_std localedir=%{_localedir}
 
 # keep some keymap/consolefonts compatibility with console-tools
 ln -s fr-latin9.map.gz \
