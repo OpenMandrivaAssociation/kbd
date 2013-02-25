@@ -61,6 +61,7 @@ BuildRequires:	gettext-devel
 BuildRequires:	glibc-devel
 BuildRequires:	make
 BuildRequires:  console-setup pkgconfig(xkeyboard-config)
+BuildRequires:	pam-devel
 
 Conflicts:	initscripts <= 8.54-2mdv2008.0
 Conflicts:	util-linux < 2.13
