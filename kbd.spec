@@ -39,6 +39,11 @@ Patch5:		kbd-1.14.1-unicode_start_no_loadkeys.patch
 Patch6:		kbd-1.15-remove-unneeded-calls.patch
 # (fc) allow to wait for VT switch in userland (Novell bug #540482) (Gentoo)
 Patch7:		kbd-1.12-chvt-userwait.patch
+# (proyvind): systemd has become more restrictive about permissions for
+#	      /dev/console, and since loadkeys are trying to grab it even when
+#	      it's not even supposed to nor have any use of doing so, this
+#	      causes problems for when we just wanna print out keymap to stdout
+Patch8:		kbd-1.15.5-really-print-to-stdout-when-supposed-to.patch
 
 # Fedora patches
 # Patch0: puts additional information into man pages
@@ -99,6 +104,7 @@ cp -fp %{SOURCE106} .
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1 -b .stdout~
 
 %patch100 -p1 -b .keycodes-man~
 %patch101 -p1 -b .sparc~
