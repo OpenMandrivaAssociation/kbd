@@ -3,7 +3,7 @@
 
 Name:		kbd
 Version:	1.15.5
-Release:	1
+Release:	2
 Summary:	Keyboard and console utilities for Linux
 License:	GPLv2+
 Group:		Terminals
@@ -54,6 +54,15 @@ Patch104:         kbd-1.15.5-loadkeys-regression.patch
 # Patch5: fixes decimal separator in Swiss German keyboard layout, bz 882529
 Patch105:         kbd-1.15.5-sg-decimal-separator.patch
 
+# SuSE patches
+Patch200:         kbd-1.15.2-prtscr_no_sigquit.patch
+Patch201:         kbd-1.15.2-dumpkeys-ppc.patch
+Patch202:         kbd-1.15.5-unicode_scripts.patch
+Patch203:         kbd-1.15.2-docu-X11R6-xorg.patch
+Patch204:         kbd-1.15.2-sv-latin1-keycode10.patch
+Patch205:         kbd-1.15.2-setfont-no-cruft.patch
+Patch206:         kbd-1.15.2-dumpkeys-C-opt.patch
+
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gcc
@@ -97,6 +106,14 @@ cp -fp %{SOURCE106} .
 %patch103 -p1 -b .dumpkeys-man~
 %patch104 -p1 -b .loadkeys-regression~
 %patch105 -p1 -b .sg-decimal-separator~
+
+%patch200 -p1
+%patch201 -p1
+%patch202 -p1
+%patch203 -p1
+%patch204 -p1
+%patch205 -p1
+%patch206 -p0
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{SOURCE3}
