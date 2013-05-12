@@ -47,17 +47,17 @@ Patch8:		kbd-1.15.5-really-print-to-stdout-when-supposed-to.patch
 
 # Fedora patches
 # Patch0: puts additional information into man pages
-Patch100:         kbd-1.15-keycodes-man.patch
+Patch100:	kbd-1.15-keycodes-man.patch
 # Patch1: sparc modifications
-Patch101:         kbd-1.15-sparc.patch
+Patch101:	kbd-1.15-sparc.patch
 # Patch2: adds default unicode font to unicode_start script
-Patch102:         kbd-1.15-unicode_start.patch
+Patch102:	kbd-1.15-unicode_start.patch
 # Patch3: add missing dumpkeys option to man page
-Patch103:         kbd-1.15.3-dumpkeys-man.patch
+Patch103:	kbd-1.15.3-dumpkeys-man.patch
 # Patch4: fixes loadkeys regression (already upstream)
-Patch104:         kbd-1.15.5-loadkeys-regression.patch
+Patch104:	kbd-1.15.5-loadkeys-regression.patch
 # Patch5: fixes decimal separator in Swiss German keyboard layout, bz 882529
-Patch105:         kbd-1.15.5-sg-decimal-separator.patch
+Patch105:	kbd-1.15.5-sg-decimal-separator.patch
 
 # SuSE patches
 Patch200:         kbd-1.15.2-prtscr_no_sigquit.patch
@@ -74,7 +74,8 @@ BuildRequires:	gcc
 BuildRequires:	gettext-devel
 BuildRequires:	glibc-devel
 BuildRequires:	make
-BuildRequires:  console-setup pkgconfig(xkeyboard-config)
+BuildRequires:	console-setup
+BuildRequires:	pkgconfig(xkeyboard-config)
 BuildRequires:	pam-devel
 
 Conflicts:	initscripts <= 8.54-2mdv2008.0
@@ -161,11 +162,12 @@ popd
 iconv -f iso-8859-1 -t utf-8 < "ChangeLog" > "ChangeLog_"
 mv "ChangeLog_" "ChangeLog"
 %build
-%configure2_5x	--datadir=%{kbddir} \
-		--localedir=%{_localedir} \
-		--enable-nls \
-		--enable-optional-progs \
-		--disable-rpath
+%configure2_5x	\
+	--datadir=%{kbddir} \
+	--localedir=%{_localedir} \
+	--enable-nls \
+	--enable-optional-progs \
+	--disable-rpath
 
 %make
 
