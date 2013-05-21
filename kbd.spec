@@ -1,26 +1,24 @@
 %define kbddir /lib/kbd
 %define mdv_keymaps_ver 20081113
 
+Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	1.15.5
 Release:	2
-Summary:	Keyboard and console utilities for Linux
 License:	GPLv2+
 Group:		Terminals
-URL:		http://www.kbd-project.org/
+Url:		http://www.kbd-project.org/
 Source0:	ftp://ftp.altlinux.org/pub/people/legion/kbd/%{name}-%{version}.tar.gz
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 Source6:	configure_keyboard.sh
-
 # From Fedora
 Source102:	kbd-latsun-fonts.tar.bz2
 Source103:	kbd-latarcyrheb-16-fixed.tar.bz2
 Source104:	fr-dvorak.tar.bz2
 Source105:	kbd-latarcyrheb-32.tar.bz2
 Source106:	xml2lst.pl
-
 # mandriva keyboard updates
 Patch0:		kbd-1.15-mandriva.patch
 # tilde with twosuperior in french keyboard
@@ -39,7 +37,6 @@ Patch5:		kbd-1.14.1-unicode_start_no_loadkeys.patch
 Patch6:		kbd-1.15-remove-unneeded-calls.patch
 # (fc) allow to wait for VT switch in userland (Novell bug #540482) (Gentoo)
 Patch7:		kbd-1.12-chvt-userwait.patch
-
 # Fedora patches
 # Patch0: puts additional information into man pages
 Patch100:	kbd-1.15-keycodes-man.patch
@@ -55,24 +52,11 @@ Patch104:	kbd-1.15.5-loadkeys-regression.patch
 Patch105:	kbd-1.15.5-sg-decimal-separator.patch
 
 BuildRequires:	bison
-BuildRequires:	flex
-BuildRequires:	gcc
-BuildRequires:	gettext-devel
-BuildRequires:	glibc-devel
-BuildRequires:	make
 BuildRequires:	console-setup
-BuildRequires:	pkgconfig(xkeyboard-config)
+BuildRequires:	flex
+BuildRequires:	gettext-devel
 BuildRequires:	pam-devel
-
-Conflicts:	initscripts <= 8.54-2mdv2008.0
-Conflicts:	util-linux < 2.13
-Obsoletes:	console-tools <= 0.2.3-64
-Obsoletes:	libconsole0 <= 0.2.3-64
-Obsoletes:	libconsole0-devel <= 0.2.3-64
-Obsoletes:	libconsole0-static-devel <= 0.2.3-64
-Obsoletes:	lib64console0 <= 0.2.3-64
-Obsoletes:	lib64console0-devel <= 0.2.3-64
-Obsoletes:	lib64console0-static-devel <= 0.2.3-64
+BuildRequires:	pkgconfig(xkeyboard-config)
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
@@ -138,13 +122,13 @@ popd
 # Convert to utf-8
 iconv -f iso-8859-1 -t utf-8 < "ChangeLog" > "ChangeLog_"
 mv "ChangeLog_" "ChangeLog"
+
 %build
-%configure2_5x	\
+%configure2_5x \
 	--datadir=%{kbddir} \
 	--localedir=%{_localedir} \
 	--enable-nls \
 	--enable-optional-progs \
-	--disable-rpath
 
 %make
 
@@ -224,7 +208,6 @@ done < layouts-variants.lst
   /sbin/chkconfig --del keytable
 exit 0
 
-
 %files -f %{name}.lang
 %{_bindir}/chvt
 %{_bindir}/deallocvt
@@ -302,3 +285,4 @@ exit 0
 %{_mandir}/man8/setvtrgb.8*
 %{_mandir}/man8/vcstime.8*
 %{kbddir}
+
