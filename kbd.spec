@@ -128,7 +128,7 @@ mv "ChangeLog_" "ChangeLog"
 	--datadir=%{kbddir} \
 	--localedir=%{_localedir} \
 	--enable-nls \
-	--enable-optional-progs \
+	--enable-optional-progs
 
 %make
 
