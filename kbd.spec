@@ -4,7 +4,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	1.15.5
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
