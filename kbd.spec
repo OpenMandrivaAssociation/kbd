@@ -1,26 +1,24 @@
 %define kbddir /lib/kbd
 %define mdv_keymaps_ver 20081113
 
+Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	1.15.5
-Release:	2
-Summary:	Keyboard and console utilities for Linux
+Release:	3
 License:	GPLv2+
 Group:		Terminals
-URL:		http://www.kbd-project.org/
+Url:		http://www.kbd-project.org/
 Source0:	ftp://ftp.altlinux.org/pub/people/legion/kbd/%{name}-%{version}.tar.gz
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
 Source6:	configure_keyboard.sh
-
 # From Fedora
 Source102:	kbd-latsun-fonts.tar.bz2
 Source103:	kbd-latarcyrheb-16-fixed.tar.bz2
 Source104:	fr-dvorak.tar.bz2
 Source105:	kbd-latarcyrheb-32.tar.bz2
 Source106:	xml2lst.pl
-
 # mandriva keyboard updates
 Patch0:		kbd-1.15-mandriva.patch
 # tilde with twosuperior in french keyboard
@@ -69,24 +67,11 @@ Patch205:         kbd-1.15.2-setfont-no-cruft.patch
 Patch206:         kbd-1.15.2-dumpkeys-C-opt.patch
 
 BuildRequires:	bison
-BuildRequires:	flex
-BuildRequires:	gcc
-BuildRequires:	gettext-devel
-BuildRequires:	glibc-devel
-BuildRequires:	make
 BuildRequires:	console-setup
-BuildRequires:	pkgconfig(xkeyboard-config)
+BuildRequires:	flex
+BuildRequires:	gettext-devel
 BuildRequires:	pam-devel
-
-Conflicts:	initscripts <= 8.54-2mdv2008.0
-Conflicts:	util-linux < 2.13
-Obsoletes:	console-tools <= 0.2.3-64
-Obsoletes:	libconsole0 <= 0.2.3-64
-Obsoletes:	libconsole0-devel <= 0.2.3-64
-Obsoletes:	libconsole0-static-devel <= 0.2.3-64
-Obsoletes:	lib64console0 <= 0.2.3-64
-Obsoletes:	lib64console0-devel <= 0.2.3-64
-Obsoletes:	lib64console0-static-devel <= 0.2.3-64
+BuildRequires:	pkgconfig(xkeyboard-config)
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
@@ -161,13 +146,13 @@ popd
 # Convert to utf-8
 iconv -f iso-8859-1 -t utf-8 < "ChangeLog" > "ChangeLog_"
 mv "ChangeLog_" "ChangeLog"
+
 %build
-%configure2_5x	\
+%configure2_5x \
 	--datadir=%{kbddir} \
 	--localedir=%{_localedir} \
 	--enable-nls \
-	--enable-optional-progs \
-	--disable-rpath
+	--enable-optional-progs
 
 %make
 
@@ -247,7 +232,6 @@ done < layouts-variants.lst
   /sbin/chkconfig --del keytable
 exit 0
 
-
 %files -f %{name}.lang
 %{_bindir}/chvt
 %{_bindir}/deallocvt
@@ -325,3 +309,4 @@ exit 0
 %{_mandir}/man8/setvtrgb.8*
 %{_mandir}/man8/vcstime.8*
 %{kbddir}
+
