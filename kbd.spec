@@ -4,7 +4,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	1.15.5
-Release:	3
+Release:	4
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -124,6 +124,8 @@ iconv -f iso-8859-1 -t utf-8 < "ChangeLog" > "ChangeLog_"
 mv "ChangeLog_" "ChangeLog"
 
 %build
+%global optflags %{optflags} -Os
+
 %configure2_5x \
 	--datadir=%{kbddir} \
 	--localedir=%{_localedir} \
