@@ -4,7 +4,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	1.15.5
-Release:	4
+Release:	5
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -57,6 +57,7 @@ BuildRequires:	flex
 BuildRequires:	gettext-devel
 BuildRequires:	pam-devel
 BuildRequires:	pkgconfig(xkeyboard-config)
+%rename	vlock
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
