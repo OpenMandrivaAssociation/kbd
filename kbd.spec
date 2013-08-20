@@ -4,11 +4,12 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	1.15.5
-Release:	4
+Release:	6.1
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
 Source0:	ftp://ftp.altlinux.org/pub/people/legion/kbd/%{name}-%{version}.tar.gz
+Source1:	vlock.pamd
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
@@ -72,6 +73,8 @@ BuildRequires:	flex
 BuildRequires:	gettext-devel
 BuildRequires:	pam-devel
 BuildRequires:	pkgconfig(xkeyboard-config)
+Provides:	vlock = %{version}-%{release}
+Obsoletes:	vlock <= 0:2.2.2-8
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
@@ -148,6 +151,8 @@ iconv -f iso-8859-1 -t utf-8 < "ChangeLog" > "ChangeLog_"
 mv "ChangeLog_" "ChangeLog"
 
 %build
+%global optflags %{optflags} -Os
+
 %configure2_5x \
 	--datadir=%{kbddir} \
 	--localedir=%{_localedir} \
@@ -226,6 +231,8 @@ while read line; do
   ckbcomp "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbddir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
 done < layouts-variants.lst
 
+install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/vlock
+
 %find_lang %{name}
 
 %triggerun -- kbd < 1.15-5mdv
@@ -265,6 +272,7 @@ exit 0
 %{_bindir}/spawn_console
 %{_bindir}/spawn_login
 %{_bindir}/vlock
+%config(noreplace) %{_sysconfdir}/pam.d/vlock
 %config(noreplace) %{_sysconfdir}/profile.d/40configure_keyboard.sh
 /bin/dumpkeys
 /bin/kbd_mode
