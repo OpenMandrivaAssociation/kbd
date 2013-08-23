@@ -55,6 +55,7 @@ BuildRequires:	flex
 BuildRequires:	gettext-devel
 BuildRequires:	pam-devel
 BuildRequires:	pkgconfig(xkeyboard-config)
+BuildRequires:	pkgconfig(check)
 Provides:	vlock = %{version}-%{release}
 Obsoletes:	vlock <= 0:2.2.2-8
 
