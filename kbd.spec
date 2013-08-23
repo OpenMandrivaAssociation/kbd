@@ -72,6 +72,7 @@ cp -fp %{SOURCE106} .
 %ifarch ppc ppc64
 %patch2 -p1
 %endif
+%patch4 -p1
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
@@ -80,7 +81,6 @@ cp -fp %{SOURCE106} .
 %patch101 -p1 -b .sparc~
 %patch102 -p1 -b .unicode_start~
 %patch103 -p1 -b .dumpkeys-man~
-%patch104 -p1 -b .loadkeys-regression~
 %patch105 -p1 -b .sg-decimal-separator~
 
 mkdir mac_frnew; cd mac_frnew
