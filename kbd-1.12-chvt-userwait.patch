@@ -14,8 +14,8 @@ place.
 
 diff --git a/man/man1/chvt.1 b/man/man1/chvt.1
 index c7b9105..11cc9bd 100644
---- a/man/man1/chvt.1
-+++ b/man/man1/chvt.1
+--- a/docs/man/man1/chvt.1
++++ b/docs/man/man1/chvt.1
 @@ -4,6 +4,9 @@
  chvt \- change foreground virtual terminal
  .SH SYNOPSIS

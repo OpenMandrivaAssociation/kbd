@@ -1,18 +1,17 @@
 %define kbddir /lib/kbd
-%define mdv_keymaps_ver 20081113
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	1.15.5
-Release:	6
+Version:	2.0.0
+Release:	1
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
-Source0:	ftp://ftp.altlinux.org/pub/people/legion/kbd/%{name}-%{version}.tar.gz
+Source0:	ftp://ftp.kernel.org/pub/linux/utils/kbd/%{name}-%{version}.tar.xz
 Source1:	vlock.pamd
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
-Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
+Source5:	kbd-distro-keymaps-20130823.tar.xz
 Source6:	configure_keyboard.sh
 # From Fedora
 Source102:	kbd-latsun-fonts.tar.bz2
@@ -47,8 +46,6 @@ Patch101:	kbd-1.15-sparc.patch
 Patch102:	kbd-1.15-unicode_start.patch
 # Patch3: add missing dumpkeys option to man page
 Patch103:	kbd-1.15.3-dumpkeys-man.patch
-# Patch4: fixes loadkeys regression (already upstream)
-Patch104:	kbd-1.15.5-loadkeys-regression.patch
 # Patch5: fixes decimal separator in Swiss German keyboard layout, bz 882529
 Patch105:	kbd-1.15.5-sg-decimal-separator.patch
 
@@ -58,6 +55,7 @@ BuildRequires:	flex
 BuildRequires:	gettext-devel
 BuildRequires:	pam-devel
 BuildRequires:	pkgconfig(xkeyboard-config)
+BuildRequires:	pkgconfig(check)
 Provides:	vlock = %{version}-%{release}
 Obsoletes:	vlock <= 0:2.2.2-8
 
@@ -83,7 +81,6 @@ cp -fp %{SOURCE106} .
 %patch101 -p1 -b .sparc~
 %patch102 -p1 -b .unicode_start~
 %patch103 -p1 -b .dumpkeys-man~
-%patch104 -p1 -b .loadkeys-regression~
 %patch105 -p1 -b .sg-decimal-separator~
 
 mkdir mac_frnew; cd mac_frnew
