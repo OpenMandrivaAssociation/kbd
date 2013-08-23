@@ -1,5 +1,4 @@
 %define kbddir /lib/kbd
-%define mdv_keymaps_ver 20081113
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
@@ -12,7 +11,7 @@ Source0:	ftp://ftp.kernel.org/pub/linux/utils/kbd/%{name}-%{version}.tar.xz
 Source1:	vlock.pamd
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
-Source5:	kbd-mdv-keymaps-%{mdv_keymaps_ver}.tar.bz2
+Source5:	kbd-distro-keymaps-20130823.tar.xz
 Source6:	configure_keyboard.sh
 # From Fedora
 Source102:	kbd-latsun-fonts.tar.bz2
