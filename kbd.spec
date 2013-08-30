@@ -41,7 +41,7 @@ Patch7:		kbd-1.12-chvt-userwait.patch
 #	      /dev/console, and since loadkeys are trying to grab it even when
 #	      it's not even supposed to nor have any use of doing so, this
 #	      causes problems for when we just wanna print out keymap to stdout
-Patch8:		kbd-1.15.5-really-print-to-stdout-when-supposed-to.patch
+Patch8:		kbd-2.0.0-really-print-to-stdout-when-supposed-to.patch
 
 # Fedora patches
 # Patch0: puts additional information into man pages
@@ -100,12 +100,12 @@ cp -fp %{SOURCE106} .
 %patch105 -p1 -b .sg-decimal-separator~
 
 %patch200 -p1
-%patch201 -p1
+#patch201 -p1
 %patch202 -p1
-%patch203 -p1
+#patch203 -p1
 %patch204 -p1
 %patch205 -p1
-%patch206 -p0
+#patch206 -p0
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{SOURCE3}

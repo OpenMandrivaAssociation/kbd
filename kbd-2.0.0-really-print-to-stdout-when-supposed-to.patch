@@ -1,0 +1,11 @@
+--- kbd-2.0.0/src/loadkeys.c.stdout~	2013-08-30 15:09:24.375513909 +0200
++++ kbd-2.0.0/src/loadkeys.c	2013-08-30 15:10:01.947174893 +0200
+@@ -167,7 +167,7 @@ main(int argc, char *argv[])
+ 	}
+ 
+ 	/* get console */
+-	fd = getfd(console);
++	fd = ((options & OPT_B || options & OPT_M) && !console) ? stdout : getfd(console);
+ 
+ 	if (!(options & OPT_M) && !(options & OPT_B)) {
+ 		/* check whether the keyboard is in Unicode mode */
