@@ -2,10 +2,10 @@
 sources:
   fr-dvorak.tar.bz2: c91af1324e8f619d328cceb372a52ab1a07fd2fa
   kbd-1.12-data_thai.patch: a45c6f88ec0ef368999a8d8f7d2ca1c0921f5dbd
-  kbd-1.15.5.tar.gz: f5e29dcf55e1fb37864fb1a125e90b357e438fba
-  kbd-latarcyrheb-16-fixed.tar.bz2: 17625849ecf4dedf755aefa06d78406b92c31743
+  kbd-2.0.0.tar.xz: 26e3b1572a62aed33d32476f68f09605663851d9
+  kbd-distro-keymaps-20130823.tar.xz: c1d529374ed9fbde829fbe5a1b65f8ea08022784
+  kbd-latarcyrheb-16-fixed.tar.bz2: 8b6028593ee1d6df79d469b7483c5acf8723ebf3
   kbd-latarcyrheb-32.tar.bz2: 17db7aaba451796278758e7c6e443b4659af17b9
   kbd-latsun-fonts.tar.bz2: a5f6d9dff7a8a484cd5014ec7ffdf1eaed27084a
   kbd-mac-fr-4.1.tar.gz: 8d5ffc91bff2f713d878c8fc6c73f8b5d97b3c07
-  kbd-mdv-keymaps-20081113.tar.bz2: 09dfd9f276df209d29193f97e6cba547092e3e7e
   ucwfonts.tar.bz2: 1ae55bab524e03a86d751c476acbef9075ed2108
