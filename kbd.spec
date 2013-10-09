@@ -3,7 +3,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.0.0
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -48,6 +48,8 @@ Patch102:	kbd-1.15-unicode_start.patch
 Patch103:	kbd-1.15.3-dumpkeys-man.patch
 # Patch5: fixes decimal separator in Swiss German keyboard layout, bz 882529
 Patch105:	kbd-1.15.5-sg-decimal-separator.patch
+Patch106:	fix-alt_is_meta.patch
+Patch107:	merge-fullline_singleline.patch
 
 BuildRequires:	bison
 BuildRequires:	console-setup
@@ -82,6 +84,8 @@ cp -fp %{SOURCE106} .
 %patch102 -p1 -b .unicode_start~
 %patch103 -p1 -b .dumpkeys-man~
 %patch105 -p1 -b .sg-decimal-separator~
+%patch106 -p1 -b .alt
+%patch107 -p1 -b .merge
 
 mkdir mac_frnew; cd mac_frnew
 tar -zxf %{SOURCE3}
