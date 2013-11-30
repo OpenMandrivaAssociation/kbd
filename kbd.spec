@@ -52,6 +52,12 @@ Patch101:	kbd-1.15-sparc.patch
 Patch102:	kbd-1.15-unicode_start.patch
 # Patch3: add missing dumpkeys option to man page
 Patch103:	kbd-1.15.3-dumpkeys-man.patch
+# Patch4: fixes decimal separator in Swiss German keyboard layout, bz 882529
+Patch104:	kbd-1.15.5-sg-decimal-separator.patch
+# Patch5: implement PAM account and password management, backported from upstream
+Patch105:	kbd-1.15.5-vlock-more-pam.patch
+# Patch6: adds xkb and legacy keymaps subdirs to loadkyes search path, bz 1028207 
+Patch106:	kbd-1.15.5-loadkeys-search-path.patch
 
 # SuSE patches
 Patch200:         kbd-1.15.2-prtscr_no_sigquit.patch
@@ -95,6 +101,10 @@ cp -fp %{SOURCE106} .
 %patch101 -p1 -b .sparc~
 %patch102 -p1 -b .unicode_start~
 %patch103 -p1 -b .dumpkeys-man~
+%patch104 -p1 -b .sg-decimal-separator~
+%patch105 -p1 -b .vlock-more-pam~
+%patch106 -p1 -b .loadkeys-search-path~
+
 
 %patch200 -p1
 #patch201 -p1
