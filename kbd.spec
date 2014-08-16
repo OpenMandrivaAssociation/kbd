@@ -3,7 +3,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.0.2
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -49,7 +49,7 @@ Patch100:	kbd-1.15-keycodes-man.patch
 # Patch1: sparc modifications
 Patch101:	kbd-1.15-sparc.patch
 # Patch2: adds default unicode font to unicode_start script
-Patch102:	kbd-1.15-unicode_start.patch
+Patch102:	kbd-2.0.0-unicode_start.patch
 # Patch3: add missing dumpkeys option to man page
 Patch103:	kbd-1.15.3-dumpkeys-man.patch
 # Patch4: fixes decimal separator in Swiss German keyboard layout, bz 882529
@@ -62,7 +62,6 @@ Patch106:	kbd-1.15.5-loadkeys-search-path.patch
 # SuSE patches
 Patch200:         kbd-1.15.2-prtscr_no_sigquit.patch
 Patch201:         kbd-1.15.2-dumpkeys-ppc.patch
-Patch202:         kbd-1.15.5-unicode_scripts.patch
 Patch203:         kbd-1.15.2-docu-X11R6-xorg.patch
 Patch204:         kbd-1.15.2-sv-latin1-keycode10.patch
 Patch205:         kbd-1.15.2-setfont-no-cruft.patch
@@ -108,7 +107,6 @@ cp -fp %{SOURCE106} .
 
 %patch200 -p1
 #patch201 -p1
-%patch202 -p1
 #patch203 -p1
 %patch204 -p1
 %patch205 -p1
