@@ -3,7 +3,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.0.0
-Release:	7
+Release:	7.1
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -43,7 +43,7 @@ Patch100:	kbd-1.15-keycodes-man.patch
 # Patch1: sparc modifications
 Patch101:	kbd-1.15-sparc.patch
 # Patch2: adds default unicode font to unicode_start script
-Patch102:	kbd-1.15-unicode_start.patch
+Patch102:	kbd-2.0.0-unicode_start.patch
 # Patch3: add missing dumpkeys option to man page
 Patch103:	kbd-1.15.3-dumpkeys-man.patch
 # Patch5: fixes decimal separator in Swiss German keyboard layout, bz 882529
