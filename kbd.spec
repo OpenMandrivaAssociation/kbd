@@ -54,8 +54,6 @@ Patch102:	kbd-2.0.0-unicode_start.patch
 Patch103:	kbd-1.15.3-dumpkeys-man.patch
 # Patch4: fixes decimal separator in Swiss German keyboard layout, bz 882529
 Patch104:	kbd-1.15.5-sg-decimal-separator.patch
-# Patch5: implement PAM account and password management, backported from upstream
-Patch105:	kbd-1.15.5-vlock-more-pam.patch
 # Patch6: adds xkb and legacy keymaps subdirs to loadkyes search path, bz 1028207 
 Patch106:	kbd-1.15.5-loadkeys-search-path.patch
 
@@ -101,7 +99,6 @@ cp -fp %{SOURCE106} .
 %patch102 -p1 -b .unicode_start~
 %patch103 -p1 -b .dumpkeys-man~
 %patch104 -p1 -b .sg-decimal-separator~
-%patch105 -p1 -b .vlock-more-pam~
 %patch106 -p1 -b .loadkeys-search-path~
 
 
