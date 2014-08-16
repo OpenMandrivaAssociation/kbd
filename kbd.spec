@@ -2,8 +2,8 @@
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	2.0.1
-Release:	8
+Version:	2.0.2
+Release:	1
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -155,9 +155,7 @@ iconv -f iso-8859-1 -t utf-8 < "ChangeLog" > "ChangeLog_"
 mv "ChangeLog_" "ChangeLog"
 
 %build
-%global optflags %{optflags} -Os
-
-%configure2_5x \
+%configure \
 	--datadir=%{kbddir} \
 	--localedir=%{_localedir} \
 	--enable-nls \
@@ -321,4 +319,3 @@ exit 0
 %{_mandir}/man8/setvtrgb.8*
 %{_mandir}/man8/vcstime.8*
 %{kbddir}
-
