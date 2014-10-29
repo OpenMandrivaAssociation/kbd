@@ -123,8 +123,6 @@ popd
 
 # 7-bit maps are obsolete; so are non-euro maps
 pushd data/keymaps/i386
-mv qwerty/fi.map qwerty/fi-old.map
-cp qwerty/fi-latin9.map qwerty/fi.map
 cp qwerty/pt-latin9.map qwerty/pt.map
 cp qwerty/sv-latin1.map qwerty/se-latin1.map
 
