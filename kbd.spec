@@ -3,7 +3,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.0.2
-Release:	3
+Release:	4
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -12,7 +12,6 @@ Source1:	vlock.pamd
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source5:	kbd-distro-keymaps-20130823.tar.xz
-Source6:	configure_keyboard.sh
 # From Fedora
 Source102:	kbd-latsun-fonts.tar.bz2
 Source103:	kbd-latarcyrheb-16-fixed.tar.bz2
@@ -206,8 +205,6 @@ do
 	gzip %{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.map
 done
 
-install -m644 %{SOURCE6} -D %{buildroot}%{_sysconfdir}/profile.d/40configure_keyboard.sh
-
 # Move binaries which we use before /usr is mounted from %{_bindir} to /bin.
 mkdir -p %{buildroot}/bin
 for binary in setfont dumpkeys kbd_mode unicode_start unicode_stop loadkeys ; do
@@ -269,7 +266,6 @@ exit 0
 %{_bindir}/spawn_login
 %{_bindir}/vlock
 %config(noreplace) %{_sysconfdir}/pam.d/vlock
-%config(noreplace) %{_sysconfdir}/profile.d/40configure_keyboard.sh
 /bin/dumpkeys
 /bin/kbd_mode
 /bin/loadkeys
