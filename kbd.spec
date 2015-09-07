@@ -2,8 +2,8 @@
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	2.0.2
-Release:	5
+Version:	2.0.3
+Release:	1
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -12,6 +12,7 @@ Source1:	vlock.pamd
 Source2:	ucwfonts.tar.bz2
 Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
 Source5:	kbd-distro-keymaps-20130823.tar.xz
+Source6:	cz-map.patch
 # From Fedora
 Source102:	kbd-latsun-fonts.tar.bz2
 Source103:	kbd-latarcyrheb-16-fixed.tar.bz2
@@ -53,8 +54,9 @@ Patch102:	kbd-2.0.0-unicode_start.patch
 Patch103:	kbd-1.15.3-dumpkeys-man.patch
 # Patch4: fixes decimal separator in Swiss German keyboard layout, bz 882529
 Patch104:	kbd-1.15.5-sg-decimal-separator.patch
-# Patch6: adds xkb and legacy keymaps subdirs to loadkyes search path, bz 1028207 
+# Patch6: adds xkb and legacy keymaps subdirs to loadkyes search path, bz 1028207
 Patch106:	kbd-1.15.5-loadkeys-search-path.patch
+
 
 # SuSE patches
 Patch200:         kbd-1.15.2-prtscr_no_sigquit.patch
@@ -100,7 +102,6 @@ cp -fp %{SOURCE106} .
 %patch103 -p1 -b .dumpkeys-man~
 %patch104 -p1 -b .sg-decimal-separator~
 %patch106 -p1 -b .loadkeys-search-path~
-
 
 %patch200 -p1
 #patch201 -p1
@@ -223,6 +224,11 @@ while read line; do
   XKBVARIANT=`echo "$line" | cut -d " " -f 2`
   ckbcomp "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbddir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
 done < layouts-variants.lst
+
+# Fix converted cz layout - add compose rules
+gunzip %{buildroot}/lib/kbd/keymaps/xkb/cz.map.gz
+patch %{buildroot}/lib/kbd/keymaps/xkb/cz.map < %{SOURCE6}
+gzip %{buildroot}/lib/kbd/keymaps/xkb/cz.map
 
 install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/vlock
 
