@@ -35,8 +35,6 @@ Patch4:		kbd-1.12-data_thai.patch
 Patch5:		kbd-1.14.1-unicode_start_no_loadkeys.patch
 # (fc) remove unneeded calls in unicode_stop
 Patch6:		kbd-1.15-remove-unneeded-calls.patch
-# (fc) allow to wait for VT switch in userland (Novell bug #540482) (Gentoo)
-Patch7:		kbd-1.12-chvt-userwait.patch
 # (proyvind): systemd has become more restrictive about permissions for
 #	      /dev/console, and since loadkeys are trying to grab it even when
 #	      it's not even supposed to nor have any use of doing so, this
@@ -93,7 +91,6 @@ cp -fp %{SOURCE106} .
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
 %patch8 -p1 -b .stdout~
 
 %patch100 -p1 -b .keycodes-man~
