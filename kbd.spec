@@ -81,6 +81,7 @@ It also includes a number of different fonts and keyboard maps.
 
 %prep
 %setup -q -a 2  -a 102 -a 103 -a 104 -a 105
+cp -fp %{SOURCE6} .
 cp -fp %{SOURCE106} .
 
 %patch0 -p1
