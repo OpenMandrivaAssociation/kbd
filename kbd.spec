@@ -258,7 +258,7 @@ install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/vlock
 
 # Generate entries for systemd's /usr/share/systemd/kbd-model-map
 mkdir -p  %{buildroot}%{_datadir}/systemd
-sh ./genmap4systemd.sh %{buildroot}/%{kbd}/keymaps/xkb \
+sh ./genmap4systemd.sh %{buildroot}/%{kbddir}/keymaps/xkb \
   > %{buildroot}%{_datadir}/systemd/kbd-model-map.xkb-generated
 
 %find_lang %{name}
