@@ -19,6 +19,8 @@ Source103:	kbd-latarcyrheb-16-fixed.tar.bz2
 Source104:	fr-dvorak.tar.bz2
 Source105:	kbd-latarcyrheb-32.tar.bz2
 Source106:	xml2lst.pl
+# From suse
+Source107:	genmap4systemd.sh
 # mandriva keyboard updates
 Patch0:		kbd-1.15-mandriva.patch
 # tilde with twosuperior in french keyboard
@@ -83,6 +85,7 @@ It also includes a number of different fonts and keyboard maps.
 %setup -q -a 2  -a 102 -a 103 -a 104 -a 105
 cp -fp %{SOURCE6} .
 cp -fp %{SOURCE106} .
+cp -fp %{SOURCE107} .
 
 %patch0 -p1
 %patch1 -p1
@@ -253,6 +256,11 @@ gzip %{buildroot}%{kbddir}/keymaps/xkb/cz.map
 
 install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/vlock
 
+# Generate entries for systemd's /usr/share/systemd/kbd-model-map
+mkdir -p  %{buildroot}%{_datadir}/systemd
+sh ./genmap4systemd.sh %{buildroot}/%{kbd}/keymaps/xkb \
+  > %{buildroot}%{_datadir}/systemd/kbd-model-map.xkb-generated
+
 %find_lang %{name}
 
 %triggerun -- kbd < 1.15-5mdv
@@ -336,3 +344,4 @@ exit 0
 %{_mandir}/man8/setvtrgb.8*
 %{_mandir}/man8/vcstime.8*
 %{kbddir}
+%{_datadir}/systemd/kbd-model-map.xkb-generated
