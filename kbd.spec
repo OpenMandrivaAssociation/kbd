@@ -276,6 +276,7 @@ exit 0
 %{_bindir}/loadunimap
 %{_bindir}/mapscrn
 %{_bindir}/openvt
+%{_bindir}/open
 %{_bindir}/psfaddtable
 %{_bindir}/psfgettable
 %{_bindir}/psfstriptable
@@ -314,6 +315,7 @@ exit 0
 %{_mandir}/man1/kbd_mode.1*
 %{_mandir}/man1/loadkeys.1*
 %{_mandir}/man1/openvt.1*
+%{_mandir}/man1/open.1*
 %{_mandir}/man1/psfaddtable.1*
 %{_mandir}/man1/psfgettable.1*
 %{_mandir}/man1/psfstriptable.1*
