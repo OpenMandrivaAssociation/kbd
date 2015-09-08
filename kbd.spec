@@ -214,10 +214,6 @@ done
 ln -s openvt %{buildroot}%{_bindir}/open
 ln -s openvt.1.gz %{buildroot}%{_mandir}/man1/open.1.gz
 
-# Move locale files to correct place
-cp -r %{buildroot}%{kbddir}/locale/ %{buildroot}%{_datadir}/locale
-rm -rf %{buildroot}%{kbddir}/locale
-
 # Some microoptimization
 sed -e 's,\<kbd_mode\>,/bin/kbd_mode,g;s,\<setfont\>,/bin/setfont,g' -i \
         %{buildroot}/bin/unicode_start
