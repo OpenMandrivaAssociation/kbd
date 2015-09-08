@@ -210,23 +210,50 @@ for binary in setfont dumpkeys kbd_mode unicode_start unicode_stop loadkeys ; do
   mv %{buildroot}%{_bindir}/$binary %{buildroot}/bin/
 done
 
+# Link open to openvt
+ln -s openvt %{buildroot}%{_bindir}/open
+ln -s openvt.1.gz %{buildroot}%{_mandir}/man1/open.1.gz
+
+# Move locale files to correct place
+cp -r %{buildroot}%{kbddir}/locale/ %{buildroot}%{_datadir}/locale
+rm -rf %{buildroot}%{kbddir}/locale
+
 # Some microoptimization
 sed -e 's,\<kbd_mode\>,/bin/kbd_mode,g;s,\<setfont\>,/bin/setfont,g' -i \
         %{buildroot}/bin/unicode_start
+
+# Move original keymaps to legacy directory
+mkdir -p %{buildroot}%{kbddir}/keymaps/legacy
+mv %{buildroot}%{kbddir}/keymaps/{amiga,atari,i386,include,mac,ppc,sun} %{buildroot}%{kbddir}/keymaps/legacy
 
 # Convert X keyboard layouts to console keymaps
 mkdir -p %{buildroot}%{kbddir}/keymaps/xkb
 perl xml2lst.pl < /usr/share/X11/xkb/rules/base.xml > layouts-variants.lst
 while read line; do
   XKBLAYOUT=`echo "$line" | cut -d " " -f 1`
+  echo "$XKBLAYOUT" >> layouts-list.lst
   XKBVARIANT=`echo "$line" | cut -d " " -f 2`
   ckbcomp "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbddir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
 done < layouts-variants.lst
 
+# Convert X keyboard layouts (plain, no variant)
+cat layouts-list.lst | sort -u >> layouts-list-uniq.lst
+while read line; do
+  ckbcomp "$line" | gzip > %{buildroot}%{kbddir}/keymaps/xkb/"$line".map.gz
+done < layouts-list-uniq.lst
+
+# wipe converted layouts which cannot input ASCII (#1031848)
+zgrep -L "U+0041" %{buildroot}%{kbddir}/keymaps/xkb/* | xargs rm -f
+
+# Rename the converted default fi (kotoistus) layout (#1117891)
+gunzip %{buildroot}%{kbddir}/keymaps/xkb/fi.map.gz
+mv %{buildroot}%{kbddir}/keymaps/xkb/fi.map %{buildroot}%{kbddir}/keymaps/xkb/fi-kotoistus.map
+gzip %{buildroot}%{kbddir}/keymaps/xkb/fi-kotoistus.map
+
 # Fix converted cz layout - add compose rules
-gunzip %{buildroot}/lib/kbd/keymaps/xkb/cz.map.gz
-patch %{buildroot}/lib/kbd/keymaps/xkb/cz.map < %{SOURCE6}
-gzip %{buildroot}/lib/kbd/keymaps/xkb/cz.map
+gunzip %{buildroot}%{kbddir}/keymaps/xkb/cz.map.gz
+patch %{buildroot}%{kbddir}/keymaps/xkb/cz.map < %{SOURCE6}
+gzip %{buildroot}%{kbddir}/keymaps/xkb/cz.map
 
 install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/vlock
 
