@@ -3,7 +3,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.0.3
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -76,6 +76,8 @@ BuildRequires:	pkgconfig(check)
 Requires(pre):	filesystem
 Provides:	vlock = %{version}-%{release}
 Obsoletes:	vlock <= 0:2.2.2-8
+Provides:	open = 1.4-33
+Obsoletes:	open < 1.4-33
 
 %description
 This package contains utilities to load console fonts and keyboard maps.
