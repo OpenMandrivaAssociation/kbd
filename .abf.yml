@@ -1,8 +1,7 @@
----
 sources:
   fr-dvorak.tar.bz2: c91af1324e8f619d328cceb372a52ab1a07fd2fa
   kbd-1.12-data_thai.patch: a45c6f88ec0ef368999a8d8f7d2ca1c0921f5dbd
-  kbd-2.0.3.tar.xz: dc3092e166f43c77ad469c806e05efc06efac000
+  kbd-2.0.4.tar.xz: 9aeac5556b827a9f13ccdb25257a1ac4b0243387
   kbd-distro-keymaps-20130823.tar.xz: c1d529374ed9fbde829fbe5a1b65f8ea08022784
   kbd-latarcyrheb-16-fixed.tar.bz2: 8b6028593ee1d6df79d469b7483c5acf8723ebf3
   kbd-latarcyrheb-32.tar.bz2: 17db7aaba451796278758e7c6e443b4659af17b9

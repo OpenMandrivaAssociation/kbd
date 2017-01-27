@@ -2,8 +2,8 @@
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	2.0.3
-Release:	2
+Version:	2.0.4
+Release:	1
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -37,11 +37,6 @@ Patch4:		kbd-1.12-data_thai.patch
 Patch5:		kbd-1.14.1-unicode_start_no_loadkeys.patch
 # (fc) remove unneeded calls in unicode_stop
 Patch6:		kbd-1.15-remove-unneeded-calls.patch
-# (proyvind): systemd has become more restrictive about permissions for
-#	      /dev/console, and since loadkeys are trying to grab it even when
-#	      it's not even supposed to nor have any use of doing so, this
-#	      causes problems for when we just wanna print out keymap to stdout
-Patch8:		kbd-2.0.0-really-print-to-stdout-when-supposed-to.patch
 
 # Fedora patches
 # Patch0: puts additional information into man pages
@@ -63,7 +58,6 @@ Patch200:         kbd-1.15.2-prtscr_no_sigquit.patch
 Patch201:         kbd-1.15.2-dumpkeys-ppc.patch
 Patch203:         kbd-1.15.2-docu-X11R6-xorg.patch
 Patch204:         kbd-1.15.2-sv-latin1-keycode10.patch
-Patch205:         kbd-1.15.2-setfont-no-cruft.patch
 Patch206:         kbd-1.15.2-dumpkeys-C-opt.patch
 
 BuildRequires:	bison
@@ -97,7 +91,6 @@ cp -fp %{SOURCE107} .
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch8 -p1 -b .stdout~
 
 %patch100 -p1 -b .keycodes-man~
 %patch101 -p1 -b .sparc~
