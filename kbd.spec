@@ -37,11 +37,6 @@ Patch4:		kbd-1.12-data_thai.patch
 Patch5:		kbd-1.14.1-unicode_start_no_loadkeys.patch
 # (fc) remove unneeded calls in unicode_stop
 Patch6:		kbd-1.15-remove-unneeded-calls.patch
-# (proyvind): systemd has become more restrictive about permissions for
-#	      /dev/console, and since loadkeys are trying to grab it even when
-#	      it's not even supposed to nor have any use of doing so, this
-#	      causes problems for when we just wanna print out keymap to stdout
-Patch8:		kbd-2.0.0-really-print-to-stdout-when-supposed-to.patch
 
 # Fedora patches
 # Patch0: puts additional information into man pages
