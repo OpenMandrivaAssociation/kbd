@@ -92,7 +92,6 @@ cp -fp %{SOURCE107} .
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch8 -p1 -b .stdout~
 
 %patch100 -p1 -b .keycodes-man~
 %patch101 -p1 -b .sparc~
