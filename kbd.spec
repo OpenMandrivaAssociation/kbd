@@ -58,7 +58,6 @@ Patch200:         kbd-1.15.2-prtscr_no_sigquit.patch
 Patch201:         kbd-1.15.2-dumpkeys-ppc.patch
 Patch203:         kbd-1.15.2-docu-X11R6-xorg.patch
 Patch204:         kbd-1.15.2-sv-latin1-keycode10.patch
-Patch205:         kbd-1.15.2-setfont-no-cruft.patch
 Patch206:         kbd-1.15.2-dumpkeys-C-opt.patch
 
 BuildRequires:	bison
