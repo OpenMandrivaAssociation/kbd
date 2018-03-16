@@ -103,7 +103,6 @@ cp -fp %{SOURCE107} .
 #patch201 -p1
 #patch203 -p1
 %patch204 -p1
-%patch205 -p1
 #patch206 -p0
 
 mkdir mac_frnew; cd mac_frnew
