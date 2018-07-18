@@ -275,7 +275,7 @@ exit 0
 %{_bindir}/psfgettable
 %{_bindir}/psfstriptable
 %{_bindir}/psfxtable
-%ifarch %{ix86} x86_64
+%ifarch %{ix86} x86_64 znver1
 %{_bindir}/resizecons
 %endif
 %{_bindir}/setkeycodes
