@@ -3,7 +3,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.0.4
-Release:	3
+Release:	4
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -51,7 +51,7 @@ Patch103:	kbd-1.15.3-dumpkeys-man.patch
 Patch104:	kbd-1.15.5-sg-decimal-separator.patch
 # Patch6: adds xkb and legacy keymaps subdirs to loadkyes search path, bz 1028207
 Patch106:	kbd-1.15.5-loadkeys-search-path.patch
-
+Patch107:	kbd-2.0.4-covscan-fixes.patch
 
 # SuSE patches
 Patch200:         kbd-1.15.2-prtscr_no_sigquit.patch
@@ -98,6 +98,7 @@ cp -fp %{SOURCE107} .
 %patch103 -p1 -b .dumpkeys-man~
 %patch104 -p1 -b .sg-decimal-separator~
 %patch106 -p1 -b .loadkeys-search-path~
+%patch107 -p1
 
 %patch200 -p1
 #patch201 -p1
@@ -150,10 +151,10 @@ mv "ChangeLog_" "ChangeLog"
 	--enable-nls \
 	--enable-optional-progs
 
-%make
+%make_build
 
 %install
-%makeinstall_std localedir=%{_localedir}
+%make_install localedir=%{_localedir}
 
 # keep some keymap/consolefonts compatibility with console-tools
 ln -s us-acentos.map.gz \
@@ -196,9 +197,9 @@ for toggle_file in alt_shift_toggle caps_toggle ctrl_alt_toggle \
                    ctrl_shift_toggle lwin_toggle menu_toggle \
                    rwin_toggle toggle
 do
-	cp %{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.inc \
-	   %{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.map
-	gzip %{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.map
+    cp %{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.inc \
+	%{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.map
+    gzip %{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.map
 done
 
 # Move binaries which we use before /usr is mounted from %{_bindir} to /bin.
