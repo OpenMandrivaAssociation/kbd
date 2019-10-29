@@ -2,8 +2,8 @@
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	2.0.4
-Release:	4
+Version:	2.2.0
+Release:	1
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -112,13 +112,13 @@ gunzip mac-fr-ext_new.kmap.gz
 mv mac-fr-ext_new.kmap ../data/keymaps/mac/all/mac-fr-ext_new.map
 cd ..; rm -rf mac_frnew
 
-pushd data
+cd data
 tar -jxf %{SOURCE5}
 cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
-popd
+cd -
 
 # 7-bit maps are obsolete; so are non-euro maps
-pushd data/keymaps/i386
+cd data/keymaps/i386
 cp qwerty/pt-latin9.map qwerty/pt.map
 cp qwerty/sv-latin1.map qwerty/se-latin1.map
 
@@ -133,12 +133,12 @@ mv fgGIod/trf.map fgGIod/trf-fgGIod.map
 mv olpc/es.map olpc/es-olpc.map
 mv olpc/pt.map olpc/pt-olpc.map
 mv qwerty/cz.map qwerty/cz-qwerty.map
-popd
+cd -
 
 # remove obsolete "gr" translation
-pushd po
+cd po
 rm -f gr.po gr.gmo
-popd
+cd -
 
 # Convert to utf-8
 iconv -f iso-8859-1 -t utf-8 < "ChangeLog" > "ChangeLog_"
