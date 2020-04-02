@@ -8,58 +8,35 @@ License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kbd/%{name}-%{version}.tar.xz
-Source1:	vlock.pamd
-Source2:	ucwfonts.tar.bz2
-Source3:	ftp://ftp.linux-france.org/pub/macintosh/kbd-mac-fr-4.1.tar.gz
-Source5:	kbd-distro-keymaps-20130823.tar.xz
+Source1:	kbd-latsun-fonts.tar.bz2
+Source2:	kbd-latarcyrheb-32.tar.bz2
+Source3:	xml2lst.pl
+Source4:	vlock.pamd
+Source5:	kbdinfo.1
 Source6:	cz-map.patch
-# From Fedora
-Source102:	kbd-latsun-fonts.tar.bz2
-Source103:	kbd-latarcyrheb-16-fixed.tar.bz2
-Source104:	fr-dvorak.tar.bz2
-Source105:	kbd-latarcyrheb-32.tar.bz2
-Source106:	xml2lst.pl
 # From suse
-Source107:	genmap4systemd.sh
-# mandriva keyboard updates
-Patch0:		kbd-1.15-mandriva.patch
-# tilde with twosuperior in french keyboard
-Patch1:		kbd-1.15-tilde_twosuperior_french_kbd.patch
-# some modifications to cover PPC using Linux keycodes
-Patch2:		kbd-1.12-ppc_using_linux_keycodes.patch
-# thai support, I tried to convert it from console-tools package
-# (support added by Pablo), see these patches as reference:
-# http://linux.thai.net/~thep/th-console/console-tools/console-tools-thai_ksym.patch
-# http://linux.thai.net/~thep/th-console/console-data/console-data-thai_orig-1999.08.29.patch
-# (note: thai_ksym patch not needed anymore, it's merged in kbd)
-Patch4:		kbd-1.12-data_thai.patch
-# avoid kbd scheme for loadkeys, we use unicode_start in configure_keyboard.sh
-Patch5:		kbd-1.14.1-unicode_start_no_loadkeys.patch
-# (fc) remove unneeded calls in unicode_stop
-Patch6:		kbd-1.15-remove-unneeded-calls.patch
-
-# Fedora patches
+Source10:	genmap4systemd.sh
 # Patch0: puts additional information into man pages
-Patch100:	kbd-1.15-keycodes-man.patch
+Patch0:		kbd-1.15-keycodes-man.patch
 # Patch1: sparc modifications
-Patch101:	kbd-1.15-sparc.patch
+Patch1:		kbd-1.15-sparc.patch
 # Patch2: adds default unicode font to unicode_start script
-Patch102:	kbd-2.0.0-unicode_start.patch
+Patch2:		kbd-1.15-unicode_start.patch
 # Patch3: add missing dumpkeys option to man page
-Patch103:	kbd-1.15.3-dumpkeys-man.patch
+Patch3:		kbd-1.15.3-dumpkeys-man.patch
 # Patch4: fixes decimal separator in Swiss German keyboard layout, bz 882529
-Patch104:	kbd-1.15.5-sg-decimal-separator.patch
-# Patch6: adds xkb and legacy keymaps subdirs to loadkyes search path, bz 1028207
-Patch106:	kbd-1.15.5-loadkeys-search-path.patch
-Patch107:	kbd-2.0.4-covscan-fixes.patch
-
-# SuSE patches
-Patch200:         kbd-1.15.2-prtscr_no_sigquit.patch
-Patch201:         kbd-1.15.2-dumpkeys-ppc.patch
-Patch203:         kbd-1.15.2-docu-X11R6-xorg.patch
-Patch204:         kbd-1.15.2-sv-latin1-keycode10.patch
-Patch206:         kbd-1.15.2-dumpkeys-C-opt.patch
-
+Patch4:		kbd-1.15.5-sg-decimal-separator.patch
+# Patch5: adds xkb and legacy keymaps subdirs to loadkyes search path, bz 1028207 
+Patch5:		kbd-1.15.5-loadkeys-search-path.patch
+# Patch6: don't hardcode font used in unicode_start, take it from vconsole.conf,
+#   bz 1101007
+Patch6:		kbd-2.0.2-unicode-start-font.patch
+# Patch7: fixes issues found by static analysis
+Patch7:		kbd-2.0.4-covscan-fixes.patch
+# Patch8: fix flags
+Patch8:		0001-configure.ac-respect-user-CFLAGS.patch
+# Patch9: workaround -Werror=format-security build error
+Patch9:		0001-analyze.l-add-missing-string-format.patch
 BuildRequires:	bison
 BuildRequires:	console-setup
 BuildRequires:	flex
@@ -67,6 +44,7 @@ BuildRequires:	gettext-devel
 BuildRequires:	pam-devel
 BuildRequires:	pkgconfig(xkeyboard-config)
 BuildRequires:	pkgconfig(check)
+BuildRequires:	pigz
 Requires(pre):	filesystem
 Provides:	vlock = %{version}-%{release}
 Obsoletes:	vlock <= 0:2.2.2-8
@@ -78,44 +56,20 @@ This package contains utilities to load console fonts and keyboard maps.
 It also includes a number of different fonts and keyboard maps.
 
 %prep
-%setup -q -a 2  -a 102 -a 103 -a 104 -a 105
+%setup -q -a 1 -a 2
+cp -fp %{SOURCE3} .
 cp -fp %{SOURCE6} .
-cp -fp %{SOURCE106} .
-cp -fp %{SOURCE107} .
-
-%patch0 -p1
-%patch1 -p1
-%ifarch ppc ppc64
-%patch2 -p1
-%endif
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-
-%patch100 -p1 -b .keycodes-man~
-%patch101 -p1 -b .sparc~
-%patch102 -p1 -b .unicode_start~
-%patch103 -p1 -b .dumpkeys-man~
-%patch104 -p1 -b .sg-decimal-separator~
-%patch106 -p1 -b .loadkeys-search-path~
-%patch107 -p1
-
-%patch200 -p1
-#patch201 -p1
-#patch203 -p1
-%patch204 -p1
-#patch206 -p0
-
-mkdir mac_frnew; cd mac_frnew
-tar -zxf %{SOURCE3}
-gunzip mac-fr-ext_new.kmap.gz
-mv mac-fr-ext_new.kmap ../data/keymaps/mac/all/mac-fr-ext_new.map
-cd ..; rm -rf mac_frnew
-
-cd data
-tar -jxf %{SOURCE5}
-cp keymaps/i386/include/delete.inc keymaps/i386/include/delete.map
-cd -
+%patch0 -p1 -b .keycodes-man
+%patch1 -p1 -b .sparc
+%patch2 -p1 -b .unicode_start
+%patch3 -p1 -b .dumpkeys-man
+%patch4 -p1 -b .sg-decimal-separator
+%patch5 -p1 -b .loadkeys-search-path
+%patch6 -p1 -b .unicode-start-font
+%patch7 -p1 -b .covscan-fixes
+%patch8 -p1 -b .fix-flags
+%patch9 -p1 -b .format-security
+autoreconf -f
 
 # 7-bit maps are obsolete; so are non-euro maps
 cd data/keymaps/i386
@@ -128,7 +82,6 @@ cp azerty/fr-latin9.map azerty/fr.map
 cp azerty/fr-latin9.map azerty/fr-latin0.map # legacy alias
 
 # Rename conflicting keymaps
-mv dvorak/no.map dvorak/no-dvorak.map
 mv fgGIod/trf.map fgGIod/trf-fgGIod.map
 mv olpc/es.map olpc/es-olpc.map
 mv olpc/pt.map olpc/pt-olpc.map
@@ -156,32 +109,14 @@ mv "ChangeLog_" "ChangeLog"
 %install
 %make_install localedir=%{_localedir}
 
-# keep some keymap/consolefonts compatibility with console-tools
-ln -s us-acentos.map.gz \
-	%{buildroot}%{kbddir}/keymaps/i386/qwerty/us-intl.map.gz
-ln -s mac-us.map.gz \
-	%{buildroot}%{kbddir}/keymaps/mac/all/mac-br-abnt2.map.gz
-ln -s mac-us.map.gz \
-	%{buildroot}%{kbddir}/keymaps/mac/all/mac-gr.map.gz
-ln -s mac-us.map.gz \
-	%{buildroot}%{kbddir}/keymaps/mac/all/mac-no-latin1.map.gz
-ln -s mac-us.map.gz \
-	%{buildroot}%{kbddir}/keymaps/mac/all/mac-cz-us-qwertz.map.gz
-ln -s mac-us.map.gz \
-	%{buildroot}%{kbddir}/keymaps/mac/all/mac-hu.map.gz
-ln -s mac-us.map.gz \
-	%{buildroot}%{kbddir}/keymaps/mac/all/mac-Pl02.map.gz
-ln -s mac-us.map.gz \
-	%{buildroot}%{kbddir}/keymaps/mac/all/mac-ru1.map.gz
-ln -s mac-us.map.gz \
-	%{buildroot}%{kbddir}/keymaps/mac/all/mac-jp106.map.gz
-ln -s iso07u-16.psfu.gz \
-	%{buildroot}%{kbddir}/consolefonts/iso07.f16.psfu.gz
-ln -s lat5-16.psfu.gz \
-	%{buildroot}%{kbddir}/consolefonts/lat5u-16.psfu.gz
+# Move binaries which we use before /usr is mounted from %{_bindir} to /bin.
+mkdir -p %{buildroot}/bin
+for binary in setfont dumpkeys kbd_mode unicode_start unicode_stop loadkeys ; do
+  mv %{buildroot}%{_bindir}/$binary %{buildroot}/bin/
+done
 
 # ro_win.map.gz is useless
-rm %{buildroot}%{kbddir}/keymaps/i386/qwerty/ro_win.map.gz
+rm -f %{buildroot}%{kbddir}/keymaps/i386/qwerty/ro_win.map.gz
 
 # Create additional name for Serbian latin keyboard
 ln -s sr-cy.map.gz %{buildroot}%{kbddir}/keymaps/i386/qwerty/sr-latin.map.gz
@@ -190,31 +125,16 @@ ln -s sr-cy.map.gz %{buildroot}%{kbddir}/keymaps/i386/qwerty/sr-latin.map.gz
 # Korean keyboard
 ln -s us.map.gz %{buildroot}%{kbddir}/keymaps/i386/qwerty/ko.map.gz
 
-# Our initscripts/drakx-kbd-mouse-x11 may want to load these directly as
-# they were like this when using console-tools (GRP_TOGGLE), so we do
-# this to keep compatibility (#32284)
-for toggle_file in alt_shift_toggle caps_toggle ctrl_alt_toggle \
-                   ctrl_shift_toggle lwin_toggle menu_toggle \
-                   rwin_toggle toggle
-do
-    cp %{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.inc \
-	%{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.map
-    gzip %{buildroot}%{kbddir}/keymaps/i386/include/$toggle_file.map
-done
-
-# Move binaries which we use before /usr is mounted from %{_bindir} to /bin.
-mkdir -p %{buildroot}/bin
-for binary in setfont dumpkeys kbd_mode unicode_start unicode_stop loadkeys ; do
-  mv %{buildroot}%{_bindir}/$binary %{buildroot}/bin/
-done
-
-# Link open to openvt
-ln -s openvt %{buildroot}%{_bindir}/open
-ln -s openvt.1.gz %{buildroot}%{_mandir}/man1/open.1.gz
-
 # Some microoptimization
-sed -e 's,\<kbd_mode\>,/bin/kbd_mode,g;s,\<setfont\>,/bin/setfont,g' -i \
+sed -i -e 's,\<kbd_mode\>,/bin/kbd_mode,g;s,\<setfont\>,/bin/setfont,g' \
         %{buildroot}/bin/unicode_start
+
+# install kbdinfo manpage
+install -m644 %{SOURCE5} %{buildroot}%{_mandir}/man1/kbdinfo.1
+
+# Install PAM configuration for vlock
+mkdir -p %{buildroot}%{_sysconfdir}/pam.d
+install -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/pam.d/vlock
 
 # Move original keymaps to legacy directory
 mkdir -p %{buildroot}%{kbddir}/keymaps/legacy
@@ -224,9 +144,9 @@ mv %{buildroot}%{kbddir}/keymaps/{amiga,atari,i386,include,mac,ppc,sun} %{buildr
 mkdir -p %{buildroot}%{kbddir}/keymaps/xkb
 perl xml2lst.pl < /usr/share/X11/xkb/rules/base.xml > layouts-variants.lst
 while read line; do
-  XKBLAYOUT=`echo "$line" | cut -d " " -f 1`
+  XKBLAYOUT="$(echo "$line" | cut -d " " -f 1)"
   echo "$XKBLAYOUT" >> layouts-list.lst
-  XKBVARIANT=`echo "$line" | cut -d " " -f 2`
+  XKBVARIANT="$(echo "$line" | cut -d " " -f 2)"
   ckbcomp "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbddir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
 done < layouts-variants.lst
 
@@ -249,7 +169,8 @@ gunzip %{buildroot}%{kbddir}/keymaps/xkb/cz.map.gz
 patch %{buildroot}%{kbddir}/keymaps/xkb/cz.map < %{SOURCE6}
 gzip %{buildroot}%{kbddir}/keymaps/xkb/cz.map
 
-install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/vlock
+# Link open to openvt
+ln -s openvt %{buildroot}%{_bindir}/open
 
 # Generate entries for systemd's /usr/share/systemd/kbd-model-map
 mkdir -p  %{buildroot}%{_datadir}/systemd
@@ -257,10 +178,6 @@ sh ./genmap4systemd.sh %{buildroot}/%{kbddir}/keymaps/xkb \
   > %{buildroot}%{_datadir}/systemd/kbd-model-map.xkb-generated
 
 %find_lang %{name}
-
-%triggerun -- kbd < 1.15-5mdv
-  /sbin/chkconfig --del keytable
-exit 0
 
 %files -f %{name}.lang
 %{_bindir}/chvt
@@ -276,7 +193,7 @@ exit 0
 %{_bindir}/psfgettable
 %{_bindir}/psfstriptable
 %{_bindir}/psfxtable
-%ifarch %{ix86} x86_64 znver1
+%ifarch %{ix86} %{x86_64}
 %{_bindir}/resizecons
 %endif
 %{_bindir}/setkeycodes
@@ -308,6 +225,7 @@ exit 0
 %{_mandir}/man1/dumpkeys.1*
 %{_mandir}/man1/fgconsole.1*
 %{_mandir}/man1/kbd_mode.1*
+%{_mandir}/man1/kbdinfo.1*
 %{_mandir}/man1/loadkeys.1*
 %{_mandir}/man1/openvt.1*
 %{_mandir}/man1/open.1*

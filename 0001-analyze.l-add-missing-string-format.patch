@@ -1,0 +1,26 @@
+From 50eae66fc21ef8e01c69a9d3c1ff3fcb0b2644a0 Mon Sep 17 00:00:00 2001
+From: Alexander Kanavin <alex.kanavin@gmail.com>
+Date: Wed, 4 Dec 2019 13:14:01 +0100
+Subject: [PATCH] analyze.l: add missing string format
+
+Signed-off-by: Alexander Kanavin <alex.kanavin@gmail.com>
+---
+ src/libkeymap/analyze.l | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/libkeymap/analyze.l b/src/libkeymap/analyze.l
+index e32ace6..de62f46 100644
+--- a/src/libkeymap/analyze.l
++++ b/src/libkeymap/analyze.l
+@@ -463,7 +463,7 @@ To                      to|To|TO
+ 
+ 					strerror_r(errno, buf, sizeof(buf));
+ 
+-					ERR(yyextra, buf);
++					ERR(yyextra, "%s", buf);
+ 					return(ERROR);
+ 				}
+ 
+-- 
+2.26.0
+

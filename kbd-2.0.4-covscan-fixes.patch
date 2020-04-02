@@ -1,7 +1,7 @@
-diff -up kbd-2.0.4/src/kdmapop.c.orig kbd-2.0.4/src/kdmapop.c
---- kbd-2.0.4/src/kdmapop.c.orig	2018-11-05 10:06:05.208744333 +0100
-+++ kbd-2.0.4/src/kdmapop.c	2018-11-05 10:14:16.149215908 +0100
-@@ -154,6 +154,7 @@ int getunimap(int fd, struct unimapdesc
+diff -up kbd-2.1.0/src/kdmapop.c.orig kbd-2.1.0/src/kdmapop.c
+--- kbd-2.1.0/src/kdmapop.c.orig	2019-05-07 11:21:10.000000000 +0200
++++ kbd-2.1.0/src/kdmapop.c	2019-07-17 14:38:15.799967669 +0200
+@@ -155,6 +155,7 @@ int getunimap(int fd, struct unimapdesc
  		}
  		if (ioctl(fd, GIO_UNIMAP, &ud)) {
  			perror("GIO_UNIMAP");
@@ -9,22 +9,10 @@ diff -up kbd-2.0.4/src/kdmapop.c.orig kbd-2.0.4/src/kdmapop.c
  			return -1;
  		}
  		if (ct != ud.entry_ct)
-diff -up kbd-2.0.4/src/libkeymap/common.c.orig kbd-2.0.4/src/libkeymap/common.c
---- kbd-2.0.4/src/libkeymap/common.c.orig	2016-12-19 16:01:51.000000000 +0100
-+++ kbd-2.0.4/src/libkeymap/common.c	2018-11-05 10:05:50.207730393 +0100
-@@ -246,5 +246,8 @@ int lk_free(struct lk_ctx *ctx)
- 		ctx->key_line = NULL;
- 	}
- 
-+	free(ctx);
-+	ctx = NULL;
-+
- 	return 0;
- }
-diff -up kbd-2.0.4/src/setfont.c.orig kbd-2.0.4/src/setfont.c
---- kbd-2.0.4/src/setfont.c.orig	2018-11-05 10:28:01.994027734 +0100
-+++ kbd-2.0.4/src/setfont.c	2018-11-05 10:35:54.933477039 +0100
-@@ -327,6 +327,8 @@ do_loadfont(int fd, char *inbuf, int wid
+diff -up kbd-2.1.0/src/setfont.c.orig kbd-2.1.0/src/setfont.c
+--- kbd-2.1.0/src/setfont.c.orig	2019-06-25 18:14:32.000000000 +0200
++++ kbd-2.1.0/src/setfont.c	2019-07-17 14:39:57.928188355 +0200
+@@ -323,6 +323,8 @@ do_loadfont(int fd, char *inbuf, int wid
  
  	if (putfont(fd, buf, fontsize, width, hwunit))
  		exit(EX_OSERR);
