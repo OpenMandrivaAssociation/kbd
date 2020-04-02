@@ -229,7 +229,6 @@ sh ./genmap4systemd.sh %{buildroot}/%{kbddir}/keymaps/xkb \
 %{_mandir}/man1/kbdinfo.1*
 %{_mandir}/man1/loadkeys.1*
 %{_mandir}/man1/openvt.1*
-%{_mandir}/man1/open.1*
 %{_mandir}/man1/psfaddtable.1*
 %{_mandir}/man1/psfgettable.1*
 %{_mandir}/man1/psfstriptable.1*
