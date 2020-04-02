@@ -59,6 +59,7 @@ It also includes a number of different fonts and keyboard maps.
 %setup -q -a 1 -a 2
 cp -fp %{SOURCE3} .
 cp -fp %{SOURCE6} .
+cp -fp %{SOURCE10} .
 %patch0 -p1 -b .keycodes-man
 %patch1 -p1 -b .sparc
 %patch2 -p1 -b .unicode_start
