@@ -1,4 +1,4 @@
-%define kbddir /lib/kbd
+%define kbddir %{_exec_prefix}/lib/kbd
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
@@ -125,6 +125,10 @@ ln -s sr-cy.map.gz %{buildroot}%{kbddir}/keymaps/i386/qwerty/sr-latin.map.gz
 # The rhpl keyboard layout table is indexed by kbd layout names, so we need a
 # Korean keyboard
 ln -s us.map.gz %{buildroot}%{kbddir}/keymaps/i386/qwerty/ko.map.gz
+
+# Define default console font
+ln -s LatGrkCyr-8x16.psfu.gz \
+	%{buildroot}%{kbddir}/consolefonts/default.psfu.gz
 
 # Some microoptimization
 sed -i -e 's,\<kbd_mode\>,/bin/kbd_mode,g;s,\<setfont\>,/bin/setfont,g' \
