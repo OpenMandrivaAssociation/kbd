@@ -1,4 +1,4 @@
-%define kbddir %{_exec_prefix}/lib/kbd
+%define kbd_datadir %{_exec_prefix}/lib/kbd
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
@@ -33,10 +33,6 @@ Patch5:		kbd-1.15.5-loadkeys-search-path.patch
 Patch6:		kbd-2.0.2-unicode-start-font.patch
 # Patch7: fixes issues found by static analysis
 Patch7:		kbd-2.0.4-covscan-fixes.patch
-# Patch8: fix flags
-Patch8:		0001-configure.ac-respect-user-CFLAGS.patch
-# Patch9: workaround -Werror=format-security build error
-Patch9:		0001-analyze.l-add-missing-string-format.patch
 BuildRequires:	bison
 BuildRequires:	console-setup
 BuildRequires:	flex
@@ -68,8 +64,6 @@ cp -fp %{SOURCE10} .
 %patch5 -p1 -b .loadkeys-search-path
 %patch6 -p1 -b .unicode-start-font
 %patch7 -p1 -b .covscan-fixes
-%patch8 -p1 -b .fix-flags
-%patch9 -p1 -b .format-security
 autoreconf -f
 
 # 7-bit maps are obsolete; so are non-euro maps
@@ -100,7 +94,7 @@ mv "ChangeLog_" "ChangeLog"
 
 %build
 %configure \
-	--datadir=%{kbddir} \
+	--datadir=%{kbd_datadir} \
 	--localedir=%{_localedir} \
 	--enable-nls \
 	--enable-optional-progs
@@ -117,18 +111,18 @@ for binary in setfont dumpkeys kbd_mode unicode_start unicode_stop loadkeys ; do
 done
 
 # ro_win.map.gz is useless
-rm -f %{buildroot}%{kbddir}/keymaps/i386/qwerty/ro_win.map.gz
+rm -f %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/ro_win.map.gz
 
 # Create additional name for Serbian latin keyboard
-ln -s sr-cy.map.gz %{buildroot}%{kbddir}/keymaps/i386/qwerty/sr-latin.map.gz
+ln -s sr-cy.map.gz %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/sr-latin.map.gz
 
 # The rhpl keyboard layout table is indexed by kbd layout names, so we need a
 # Korean keyboard
-ln -s us.map.gz %{buildroot}%{kbddir}/keymaps/i386/qwerty/ko.map.gz
+ln -s us.map.gz %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/ko.map.gz
 
 # Define default console font
 ln -s LatGrkCyr-8x16.psfu.gz \
-	%{buildroot}%{kbddir}/consolefonts/default.psfu.gz
+	%{buildroot}%{kbd_datadir}/consolefonts/default.psfu.gz
 
 # Some microoptimization
 sed -i -e 's,\<kbd_mode\>,/bin/kbd_mode,g;s,\<setfont\>,/bin/setfont,g' \
@@ -142,44 +136,58 @@ mkdir -p %{buildroot}%{_sysconfdir}/pam.d
 install -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/pam.d/vlock
 
 # Move original keymaps to legacy directory
-mkdir -p %{buildroot}%{kbddir}/keymaps/legacy
-mv %{buildroot}%{kbddir}/keymaps/{amiga,atari,i386,include,mac,ppc,sun} %{buildroot}%{kbddir}/keymaps/legacy
+mkdir -p %{buildroot}%{kbd_datadir}/keymaps/legacy
+mv %{buildroot}%{kbd_datadir}/keymaps/{amiga,atari,i386,include,mac,ppc,sun} %{buildroot}%{kbd_datadir}/keymaps/legacy
 
 # Convert X keyboard layouts to console keymaps
-mkdir -p %{buildroot}%{kbddir}/keymaps/xkb
+mkdir -p %{buildroot}%{kbd_datadir}/keymaps/xkb
 perl xml2lst.pl < /usr/share/X11/xkb/rules/base.xml > layouts-variants.lst
 while read line; do
   XKBLAYOUT="$(echo "$line" | cut -d " " -f 1)"
   echo "$XKBLAYOUT" >> layouts-list.lst
   XKBVARIANT="$(echo "$line" | cut -d " " -f 2)"
-  ckbcomp "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbddir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
+  ckbcomp "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
 done < layouts-variants.lst
 
 # Convert X keyboard layouts (plain, no variant)
 cat layouts-list.lst | sort -u >> layouts-list-uniq.lst
 while read line; do
-  ckbcomp "$line" | gzip > %{buildroot}%{kbddir}/keymaps/xkb/"$line".map.gz
+  ckbcomp "$line" | gzip > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$line".map.gz
 done < layouts-list-uniq.lst
 
 # wipe converted layouts which cannot input ASCII (#1031848)
-zgrep -L "U+0041" %{buildroot}%{kbddir}/keymaps/xkb/* | xargs rm -f
+zgrep -L "U+0041" %{buildroot}%{kbd_datadir}/keymaps/xkb/* | xargs rm -f
 
 # Rename the converted default fi (kotoistus) layout (#1117891)
-gunzip %{buildroot}%{kbddir}/keymaps/xkb/fi.map.gz
-mv %{buildroot}%{kbddir}/keymaps/xkb/fi.map %{buildroot}%{kbddir}/keymaps/xkb/fi-kotoistus.map
-gzip %{buildroot}%{kbddir}/keymaps/xkb/fi-kotoistus.map
+gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map.gz
+mv %{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map %{buildroot}%{kbd_datadir}/keymaps/xkb/fi-kotoistus.map
+gzip %{buildroot}%{kbd_datadir}/keymaps/xkb/fi-kotoistus.map
 
 # Fix converted cz layout - add compose rules
-gunzip %{buildroot}%{kbddir}/keymaps/xkb/cz.map.gz
-patch %{buildroot}%{kbddir}/keymaps/xkb/cz.map < %{SOURCE6}
-gzip %{buildroot}%{kbddir}/keymaps/xkb/cz.map
+gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz
+patch %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map < %{SOURCE6}
+gzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map
+
+# Rename the converted default fi (kotoistus) layout (#1117891), if exists
+if [ -f "%{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map.gz" ]; then
+  gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map.gz
+  mv %{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map %{buildroot}%{kbd_datadir}/keymaps/xkb/fi-kotoistus.map
+  gzip %{buildroot}%{kbd_datadir}/keymaps/xkb/fi-kotoistus.map
+fi
+
+# Fix converted cz layout - add compose rules, if exists
+if [ -f "%{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz" ]; then
+  gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz
+  patch %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map < %{SOURCE6}
+  gzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map
+f
 
 # Link open to openvt
 ln -s openvt %{buildroot}%{_bindir}/open
 
 # Generate entries for systemd's /usr/share/systemd/kbd-model-map
 mkdir -p  %{buildroot}%{_datadir}/systemd
-sh ./genmap4systemd.sh %{buildroot}/%{kbddir}/keymaps/xkb \
+sh ./genmap4systemd.sh %{buildroot}/%{kbd_datadir}/keymaps/xkb \
   > %{buildroot}%{_datadir}/systemd/kbd-model-map.xkb-generated
 
 %find_lang %{name}
@@ -262,5 +270,5 @@ sh ./genmap4systemd.sh %{buildroot}/%{kbddir}/keymaps/xkb \
 %{_mandir}/man8/setvesablank.8*
 %{_mandir}/man8/setvtrgb.8*
 %{_mandir}/man8/vcstime.8*
-%{kbddir}
+%{kbd_datadir}
 %{_datadir}/systemd/kbd-model-map.xkb-generated
