@@ -158,16 +158,6 @@ done < layouts-list-uniq.lst
 # wipe converted layouts which cannot input ASCII (#1031848)
 zgrep -L "U+0041" %{buildroot}%{kbd_datadir}/keymaps/xkb/* | xargs rm -f
 
-# Rename the converted default fi (kotoistus) layout (#1117891)
-gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map.gz
-mv %{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map %{buildroot}%{kbd_datadir}/keymaps/xkb/fi-kotoistus.map
-gzip %{buildroot}%{kbd_datadir}/keymaps/xkb/fi-kotoistus.map
-
-# Fix converted cz layout - add compose rules
-gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz
-patch %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map < %{SOURCE6}
-gzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map
-
 # Rename the converted default fi (kotoistus) layout (#1117891), if exists
 if [ -f "%{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map.gz" ]; then
   gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map.gz
@@ -180,7 +170,7 @@ if [ -f "%{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz" ]; then
   gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz
   patch %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map < %{SOURCE6}
   gzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map
-f
+fi
 
 # Link open to openvt
 ln -s openvt %{buildroot}%{_bindir}/open
