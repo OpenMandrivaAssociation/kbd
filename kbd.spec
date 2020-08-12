@@ -180,6 +180,10 @@ mkdir -p  %{buildroot}%{_datadir}/systemd
 sh ./genmap4systemd.sh %{buildroot}/%{kbd_datadir}/keymaps/xkb \
   > %{buildroot}%{_datadir}/systemd/kbd-model-map.xkb-generated
 
+# remove library used only for tests
+rm -f %{buildroot}%{_libdir}/libtswrap*	
+rm -f %{buildroot}%{_prefix}/lib/debug/%{_libdir}/libtswrap*
+
 %find_lang %{name}
 
 %files -f %{name}.lang
