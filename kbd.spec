@@ -3,7 +3,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.3.0
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -41,6 +41,7 @@ BuildRequires:	pam-devel
 BuildRequires:	pkgconfig(xkeyboard-config)
 BuildRequires:	pkgconfig(check)
 BuildRequires:	pigz
+Requires:	ncurses
 Requires(pre):	filesystem
 Provides:	vlock = %{version}-%{release}
 Obsoletes:	vlock <= 0:2.2.2-8
