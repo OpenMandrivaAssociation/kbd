@@ -3,7 +3,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.4.0
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -33,6 +33,11 @@ Patch5:		kbd-1.15.5-loadkeys-search-path.patch
 Patch6:		kbd-2.0.2-unicode-start-font.patch
 # Patch7: fixes issues found by static analysis
 Patch7:		kbd-2.0.4-covscan-fixes.patch
+# Patch8: fixes another batch of issues found by static analysis
+Patch8:		kbd-2.4.0-covscan-fixes.patch
+# Patch9: fixes setfont exit code, accepted upstream
+Patch9:		kbd-2.4.0-setfont-exit-code.patch
+
 BuildRequires:	bison
 BuildRequires:	console-setup
 BuildRequires:	flex
@@ -65,6 +70,8 @@ cp -fp %{SOURCE10} .
 %patch5 -p1 -b .loadkeys-search-path
 %patch6 -p1 -b .unicode-start-font
 %patch7 -p1 -b .covscan-fixes
+%patch8 -p1 -b .covscan-fixes-pt2
+%patch9 -p1 -b .setfont-exit-code
 autoreconf -f
 
 # 7-bit maps are obsolete; so are non-euro maps
@@ -105,10 +112,10 @@ mv "ChangeLog_" "ChangeLog"
 %install
 %make_install localedir=%{_localedir}
 
-# Move binaries which we use before /usr is mounted from %{_bindir} to /bin.
+# Compat symlinks
 mkdir -p %{buildroot}/bin
 for binary in setfont dumpkeys kbd_mode unicode_start unicode_stop loadkeys ; do
-  mv %{buildroot}%{_bindir}/$binary %{buildroot}/bin/
+  ln -sf %{_bindir}/$binary %{buildroot}/bin/$binary
 done
 
 # ro_win.map.gz is useless
@@ -126,8 +133,8 @@ ln -s LatGrkCyr-8x16.psfu.gz \
 	%{buildroot}%{kbd_datadir}/consolefonts/default.psfu.gz
 
 # Some microoptimization
-sed -i -e 's,\<kbd_mode\>,/bin/kbd_mode,g;s,\<setfont\>,/bin/setfont,g' \
-        %{buildroot}/bin/unicode_start
+sed -i -e 's,\<kbd_mode\>,%{_bindir}/kbd_mode,g;s,\<setfont\>,%{_bindir}/setfont,g' \
+        %{buildroot}%{_bindir}/unicode_start
 
 # install kbdinfo manpage
 install -m644 %{SOURCE5} %{buildroot}%{_mandir}/man1/kbdinfo.1
@@ -147,24 +154,17 @@ while read line; do
   XKBLAYOUT="$(echo "$line" | cut -d " " -f 1)"
   echo "$XKBLAYOUT" >> layouts-list.lst
   XKBVARIANT="$(echo "$line" | cut -d " " -f 2)"
-  ckbcomp "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
+  ckbcomp -rules base "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
 done < layouts-variants.lst
 
 # Convert X keyboard layouts (plain, no variant)
 cat layouts-list.lst | sort -u >> layouts-list-uniq.lst
 while read line; do
-  ckbcomp "$line" | gzip > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$line".map.gz
+  ckbcomp -rules base "$line" | gzip > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$line".map.gz
 done < layouts-list-uniq.lst
 
 # wipe converted layouts which cannot input ASCII (#1031848)
 zgrep -L "U+0041" %{buildroot}%{kbd_datadir}/keymaps/xkb/* | xargs rm -f
-
-# Rename the converted default fi (kotoistus) layout (#1117891), if exists
-if [ -f "%{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map.gz" ]; then
-  gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map.gz
-  mv %{buildroot}%{kbd_datadir}/keymaps/xkb/fi.map %{buildroot}%{kbd_datadir}/keymaps/xkb/fi-kotoistus.map
-  gzip %{buildroot}%{kbd_datadir}/keymaps/xkb/fi-kotoistus.map
-fi
 
 # Fix converted cz layout - add compose rules, if exists
 if [ -f "%{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz" ]; then
@@ -182,88 +182,15 @@ sh ./genmap4systemd.sh %{buildroot}/%{kbd_datadir}/keymaps/xkb \
   > %{buildroot}%{_datadir}/systemd/kbd-model-map.xkb-generated
 
 # remove library used only for tests
-rm -f %{buildroot}%{_libdir}/libtswrap*	
+rm -f %{buildroot}%{_libdir}/libtswrap*
 rm -f %{buildroot}%{_prefix}/lib/debug/%{_libdir}/libtswrap*
 
 %find_lang %{name}
 
 %files -f %{name}.lang
-%{_bindir}/chvt
-%{_bindir}/deallocvt
-%{_bindir}/fgconsole
-%{_bindir}/getkeycodes
-%{_bindir}/kbdrate
-%{_bindir}/loadunimap
-%{_bindir}/mapscrn
-%{_bindir}/openvt
-%{_bindir}/open
-%{_bindir}/psfaddtable
-%{_bindir}/psfgettable
-%{_bindir}/psfstriptable
-%{_bindir}/psfxtable
-%ifarch %{ix86} %{x86_64}
-%{_bindir}/resizecons
-%endif
-%{_bindir}/setkeycodes
-%{_bindir}/setleds
-%{_bindir}/setmetamode
-%{_bindir}/showconsolefont
-%{_bindir}/showkey
-%{_bindir}/clrunimap
-%{_bindir}/getunimap
-%{_bindir}/kbdinfo
-%{_bindir}/outpsfheader
-%{_bindir}/screendump
-%{_bindir}/setlogcons
-%{_bindir}/setpalette
-%{_bindir}/setvesablank
-%{_bindir}/setvtrgb
-%{_bindir}/spawn_console
-%{_bindir}/spawn_login
-%{_bindir}/vlock
 %config(noreplace) %{_sysconfdir}/pam.d/vlock
-/bin/dumpkeys
-/bin/kbd_mode
-/bin/loadkeys
-/bin/setfont
-/bin/unicode_start
-/bin/unicode_stop
-%{_mandir}/man1/chvt.1*
-%{_mandir}/man1/deallocvt.1*
-%{_mandir}/man1/dumpkeys.1*
-%{_mandir}/man1/fgconsole.1*
-%{_mandir}/man1/kbd_mode.1*
-%{_mandir}/man1/kbdinfo.1*
-%{_mandir}/man1/loadkeys.1*
-%{_mandir}/man1/openvt.1*
-%{_mandir}/man1/psfaddtable.1*
-%{_mandir}/man1/psfgettable.1*
-%{_mandir}/man1/psfstriptable.1*
-%{_mandir}/man1/psfxtable.1*
-%{_mandir}/man1/setleds.1*
-%{_mandir}/man1/setmetamode.1*
-%{_mandir}/man1/showkey.1*
-%{_mandir}/man1/unicode_start.1*
-%{_mandir}/man1/unicode_stop.1*
-%{_mandir}/man1/vlock.1*
-%{_mandir}/man5/keymaps.5*
-%{_mandir}/man8/getkeycodes.8*
-%{_mandir}/man8/kbdrate.8*
-%{_mandir}/man8/loadunimap.8*
-%{_mandir}/man8/mapscrn.8*
-%{_mandir}/man8/resizecons.8*
-%{_mandir}/man8/setfont.8*
-%{_mandir}/man8/setkeycodes.8*
-%{_mandir}/man8/showconsolefont.8*
-%{_mandir}/man1/codepage.1*
-%{_mandir}/man1/screendump.1*
-%{_mandir}/man1/splitfont.1*
-%{_mandir}/man8/clrunimap.8*
-%{_mandir}/man8/getunimap.8*
-%{_mandir}/man8/mk_modmap.8*
-%{_mandir}/man8/setlogcons.8*
-%{_mandir}/man8/setvesablank.8*
-%{_mandir}/man8/setvtrgb.8*
-%{_mandir}/man8/vcstime.8*
+/bin/*
+%{_bindir}/*
 %{kbd_datadir}
 %{_datadir}/systemd/kbd-model-map.xkb-generated
+%doc %{_mandir}/*/*
