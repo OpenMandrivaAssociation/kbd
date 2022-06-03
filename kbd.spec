@@ -2,8 +2,8 @@
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	2.4.0
-Release:	2
+Version:	2.5.0
+Release:	1
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -14,6 +14,7 @@ Source3:	xml2lst.pl
 Source4:	vlock.pamd
 Source5:	kbdinfo.1
 Source6:	cz-map.patch
+
 # From suse
 Source10:	genmap4systemd.sh
 # Patch0: puts additional information into man pages
@@ -22,21 +23,17 @@ Patch0:		kbd-1.15-keycodes-man.patch
 Patch1:		kbd-1.15-sparc.patch
 # Patch2: adds default unicode font to unicode_start script
 Patch2:		kbd-1.15-unicode_start.patch
-# Patch3: add missing dumpkeys option to man page
-Patch3:		kbd-1.15.3-dumpkeys-man.patch
-# Patch4: fixes decimal separator in Swiss German keyboard layout, bz 882529
-Patch4:		kbd-1.15.5-sg-decimal-separator.patch
-# Patch5: adds xkb and legacy keymaps subdirs to loadkyes search path, bz 1028207 
-Patch5:		kbd-1.15.5-loadkeys-search-path.patch
-# Patch6: don't hardcode font used in unicode_start, take it from vconsole.conf,
+# Patch3: fixes decimal separator in Swiss German keyboard layout, bz 882529
+Patch3:		kbd-1.15.5-sg-decimal-separator.patch
+# Patch4: adds xkb and legacy keymaps subdirs to loadkyes search path, bz 1028207 
+Patch4:		kbd-1.15.5-loadkeys-search-path.patch
+# Patch5: don't hardcode font used in unicode_start, take it from vconsole.conf,
 #   bz 1101007
-Patch6:		kbd-2.0.2-unicode-start-font.patch
-# Patch7: fixes issues found by static analysis
-Patch7:		kbd-2.0.4-covscan-fixes.patch
-# Patch8: fixes another batch of issues found by static analysis
-Patch8:		kbd-2.4.0-covscan-fixes.patch
-# Patch9: fixes setfont exit code, accepted upstream
-Patch9:		kbd-2.4.0-setfont-exit-code.patch
+Patch5:		kbd-2.0.2-unicode-start-font.patch
+# Patch6: fixes issues found by static analysis
+Patch6:		kbd-2.4.0-covscan-fixes.patch
+# Patch7: test uses cz.map that was previously renamed to cz-qwerty.map during the build
+Patch7:		kbd-2.5.0-renamed-keymap-in-test.patch
 
 BuildRequires:	bison
 BuildRequires:	console-setup
@@ -65,13 +62,11 @@ cp -fp %{SOURCE10} .
 %patch0 -p1 -b .keycodes-man
 %patch1 -p1 -b .sparc
 %patch2 -p1 -b .unicode_start
-%patch3 -p1 -b .dumpkeys-man
-%patch4 -p1 -b .sg-decimal-separator
-%patch5 -p1 -b .loadkeys-search-path
-%patch6 -p1 -b .unicode-start-font
-%patch7 -p1 -b .covscan-fixes
-%patch8 -p1 -b .covscan-fixes-pt2
-%patch9 -p1 -b .setfont-exit-code
+%patch3 -p1 -b .sg-decimal-separator
+%patch4 -p1 -b .loadkeys-search-path
+%patch5 -p1 -b .unicode-start-font
+%patch6 -p1 -b .covscan-fixes
+%patch7 -p1 -b .renamed-keymap-in-test
 autoreconf -f
 
 # 7-bit maps are obsolete; so are non-euro maps

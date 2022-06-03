@@ -1,0 +1,11 @@
+diff -up kbd-2.5-rc1/tests/libkeymap.at.orig kbd-2.5-rc1/tests/libkeymap.at
+--- kbd-2.5-rc1/tests/libkeymap.at.orig	2022-03-23 09:30:53.176271763 +0100
++++ kbd-2.5-rc1/tests/libkeymap.at	2022-03-23 09:31:13.997291060 +0100
+@@ -173,6 +173,6 @@ AT_SKIP_IF([ test "$(arch)" != "x86_64"
+ cp -f -- \
+ 	"$abs_srcdir/data/bkeymap-2.0.4/cz.map.bin" \
+ 	expout
+-AT_CHECK([$abs_top_builddir/src/loadkeys -b "$abs_top_srcdir/data/keymaps/i386/qwerty/cz.map"],
++AT_CHECK([$abs_top_builddir/src/loadkeys -b "$abs_top_srcdir/data/keymaps/i386/qwerty/cz-qwerty.map"],
+ 	[0], [expout])
+ AT_CLEANUP
