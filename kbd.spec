@@ -2,7 +2,7 @@
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	2.5.0
+Version:	2.5.1
 Release:	1
 License:	GPLv2+
 Group:		Terminals
@@ -53,6 +53,14 @@ Obsoletes:	open < 1.4-33
 %description
 This package contains utilities to load console fonts and keyboard maps.
 It also includes a number of different fonts and keyboard maps.
+
+%package legacy
+Summary:	Legacy data for %{name} package
+BuildArch:	noarch
+
+%description legacy
+The %{name}-legacy package contains original keymaps for kbd package.
+Please note that %{name}-legacy is not helpful without kbd.
 
 %prep
 %setup -q -a 1 -a 2
@@ -123,9 +131,9 @@ ln -s sr-cy.map.gz %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/sr-latin.map.g
 # Korean keyboard
 ln -s us.map.gz %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/ko.map.gz
 
-# Define default console font
-ln -s LatGrkCyr-8x16.psfu.gz \
-	%{buildroot}%{kbd_datadir}/consolefonts/default.psfu.gz
+# https://bugzilla.redhat.com/show_bug.cgi?id=2015972
+# xkb Arabic layout is 'ara', not 'fa', langtable tells us to use 'ara'
+ln -s fa.map.gz %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/ara.map.gz
 
 # Some microoptimization
 sed -i -e 's,\<kbd_mode\>,%{_bindir}/kbd_mode,g;s,\<setfont\>,%{_bindir}/setfont,g' \
@@ -149,13 +157,13 @@ while read line; do
   XKBLAYOUT="$(echo "$line" | cut -d " " -f 1)"
   echo "$XKBLAYOUT" >> layouts-list.lst
   XKBVARIANT="$(echo "$line" | cut -d " " -f 2)"
-  ckbcomp -rules base "$XKBLAYOUT" "$XKBVARIANT" | gzip > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
+  ckbcomp -rules base "$XKBLAYOUT" "$XKBVARIANT" | gzip -n9 > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
 done < layouts-variants.lst
 
 # Convert X keyboard layouts (plain, no variant)
 cat layouts-list.lst | sort -u >> layouts-list-uniq.lst
 while read line; do
-  ckbcomp -rules base "$line" | gzip > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$line".map.gz
+  ckbcomp -rules base "$line" | gzip -n9 > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$line".map.gz
 done < layouts-list-uniq.lst
 
 # wipe converted layouts which cannot input ASCII (#1031848)
@@ -165,7 +173,7 @@ zgrep -L "U+0041" %{buildroot}%{kbd_datadir}/keymaps/xkb/* | xargs rm -f
 if [ -f "%{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz" ]; then
   gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz
   patch %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map < %{SOURCE6}
-  gzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map
+  gzip -n9 %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map
 fi
 
 # Link open to openvt
@@ -187,5 +195,9 @@ rm -f %{buildroot}%{_prefix}/lib/debug/%{_libdir}/libtswrap*
 /bin/*
 %{_bindir}/*
 %{kbd_datadir}
+%exclude %{kbd_datadir}/keymaps/legacy
 %{_datadir}/systemd/kbd-model-map.xkb-generated
 %doc %{_mandir}/*/*
+
+%files legacy
+%{kbd_datadir}/keymaps/legacy
