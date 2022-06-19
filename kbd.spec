@@ -3,7 +3,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.5.1
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -115,12 +115,6 @@ mv "ChangeLog_" "ChangeLog"
 %install
 %make_install localedir=%{_localedir}
 
-# Compat symlinks
-mkdir -p %{buildroot}/bin
-for binary in setfont dumpkeys kbd_mode unicode_start unicode_stop loadkeys ; do
-  ln -sf %{_bindir}/$binary %{buildroot}/bin/$binary
-done
-
 # ro_win.map.gz is useless
 rm -f %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/ro_win.map.gz
 
@@ -192,7 +186,6 @@ rm -f %{buildroot}%{_prefix}/lib/debug/%{_libdir}/libtswrap*
 
 %files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/pam.d/vlock
-/bin/*
 %{_bindir}/*
 %{kbd_datadir}
 %exclude %{kbd_datadir}/keymaps/legacy
