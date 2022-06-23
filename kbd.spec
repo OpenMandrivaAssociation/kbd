@@ -3,7 +3,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.5.1
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -32,8 +32,6 @@ Patch4:		kbd-1.15.5-loadkeys-search-path.patch
 Patch5:		kbd-2.0.2-unicode-start-font.patch
 # Patch6: fixes issues found by static analysis
 Patch6:		kbd-2.4.0-covscan-fixes.patch
-# Patch7: test uses cz.map that was previously renamed to cz-qwerty.map during the build
-Patch7:		kbd-2.5.0-renamed-keymap-in-test.patch
 
 BuildRequires:	bison
 BuildRequires:	console-setup
@@ -74,7 +72,6 @@ cp -fp %{SOURCE10} .
 %patch4 -p1 -b .loadkeys-search-path
 %patch5 -p1 -b .unicode-start-font
 %patch6 -p1 -b .covscan-fixes
-%patch7 -p1 -b .renamed-keymap-in-test
 autoreconf -f
 
 # 7-bit maps are obsolete; so are non-euro maps
@@ -98,10 +95,6 @@ cd -
 cd po
 rm -f gr.po gr.gmo
 cd -
-
-# Convert to utf-8
-iconv -f iso-8859-1 -t utf-8 < "ChangeLog" > "ChangeLog_"
-mv "ChangeLog_" "ChangeLog"
 
 %build
 %configure \
@@ -144,24 +137,33 @@ install -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/pam.d/vlock
 mkdir -p %{buildroot}%{kbd_datadir}/keymaps/legacy
 mv %{buildroot}%{kbd_datadir}/keymaps/{amiga,atari,i386,include,mac,ppc,sun} %{buildroot}%{kbd_datadir}/keymaps/legacy
 
+# Make sure Perl has a locale where uc/lc works for unicode codepoints
+# see e.g. https://perldoc.perl.org/perldiag.html#Wide-character-(U%2b%25X)-in-%25s
+export LC_ALL=C.utf-8
 # Convert X keyboard layouts to console keymaps
 mkdir -p %{buildroot}%{kbd_datadir}/keymaps/xkb
-perl xml2lst.pl < /usr/share/X11/xkb/rules/base.xml > layouts-variants.lst
+perl xml2lst.pl < %{_datadir}/X11/xkb/rules/base.xml > layouts-variants.lst
 while read line; do
-  XKBLAYOUT="$(echo "$line" | cut -d " " -f 1)"
-  echo "$XKBLAYOUT" >> layouts-list.lst
-  XKBVARIANT="$(echo "$line" | cut -d " " -f 2)"
-  ckbcomp -rules base "$XKBLAYOUT" "$XKBVARIANT" | gzip -n9 > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
+    XKBLAYOUT=$(echo "$line" | cut -d " " -f 1)
+    echo "$XKBLAYOUT" >> layouts-list.lst
+    XKBVARIANT=$(echo "$line" | cut -d " " -f 2)
+    ckbcomp "$XKBLAYOUT" "$XKBVARIANT" > /tmp/"$XKBLAYOUT"-"$XKBVARIANT".map
+# skip converted layouts which cannot input ASCII (rh#1031848)
+    grep -q "U+0041" /tmp/"$XKBLAYOUT"-"$XKBVARIANT".map && \
+    gzip -cn9 /tmp/"$XKBLAYOUT"-"$XKBVARIANT".map > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
+    rm /tmp/"$XKBLAYOUT"-"$XKBVARIANT".map
 done < layouts-variants.lst
 
 # Convert X keyboard layouts (plain, no variant)
 cat layouts-list.lst | sort -u >> layouts-list-uniq.lst
 while read line; do
-  ckbcomp -rules base "$line" | gzip -n9 > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$line".map.gz
+    ckbcomp "$line" > /tmp/"$line".map
+    grep -q "U+0041" /tmp/"$line".map && \
+    gzip -cn9 /tmp/"$line".map > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$line".map.gz
+    rm /tmp/"$line".map
 done < layouts-list-uniq.lst
 
-# wipe converted layouts which cannot input ASCII (#1031848)
-zgrep -L "U+0041" %{buildroot}%{kbd_datadir}/keymaps/xkb/* | xargs rm -f
+[ ! "$(ls -A %{buildroot}%{kbd_datadir}/keymaps/xkb)" ] && "Xkb keymaps are missing!" && exit 1
 
 # Fix converted cz layout - add compose rules, if exists
 if [ -f "%{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz" ]; then
