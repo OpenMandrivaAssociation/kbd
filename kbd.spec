@@ -1,9 +1,14 @@
+%ifnarch %{riscv}
+# (tpg) optimize it a bit
+%global optflags %{optflags} -Oz --rtlib=compiler-rt
+%endif
+
 %define kbd_datadir %{_exec_prefix}/lib/kbd
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.5.1
-Release:	3
+Release:	4
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
