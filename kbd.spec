@@ -4,21 +4,21 @@
 %endif
 
 %define kbd_datadir %{_exec_prefix}/lib/kbd
+%define beta rc1
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	2.5.1
-Release:	5
+Version:	2.6
+Release:	%{?beta:0.%{beta}.}1
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
-Source0:	ftp://ftp.kernel.org/pub/linux/utils/kbd/%{name}-%{version}.tar.xz
+Source0:	https://kernel.org/pub/linux/utils/kbd/%{name}-%{version}%{?beta:-%{beta}}.tar.xz
 Source1:	kbd-latsun-fonts.tar.bz2
 Source2:	kbd-latarcyrheb-32.tar.bz2
 Source3:	xml2lst.pl
 Source4:	vlock.pamd
 Source5:	kbdinfo.1
-Source6:	cz-map.patch
 
 # From suse
 Source10:	genmap4systemd.sh
@@ -66,9 +66,8 @@ The %{name}-legacy package contains original keymaps for kbd package.
 Please note that %{name}-legacy is not helpful without kbd.
 
 %prep
-%setup -q -a 1 -a 2
+%setup -q -a 1 -a 2 -n %{name}-%{version}%{?beta:-%{beta}}
 cp -fp %{SOURCE3} .
-cp -fp %{SOURCE6} .
 cp -fp %{SOURCE10} .
 %patch0 -p1 -b .keycodes-man
 %patch1 -p1 -b .sparc
@@ -169,13 +168,6 @@ while read line; do
 done < layouts-list-uniq.lst
 
 [ ! "$(ls -A %{buildroot}%{kbd_datadir}/keymaps/xkb)" ] && "Xkb keymaps are missing!" && exit 1
-
-# Fix converted cz layout - add compose rules, if exists
-if [ -f "%{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz" ]; then
-  gunzip %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map.gz
-  patch %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map < %{SOURCE6}
-  gzip -n9 %{buildroot}%{kbd_datadir}/keymaps/xkb/cz.map
-fi
 
 # Link open to openvt
 ln -s openvt %{buildroot}%{_bindir}/open
