@@ -4,11 +4,11 @@
 %endif
 
 %define kbd_datadir %{_exec_prefix}/lib/kbd
-%define beta rc1
+#define beta rc1
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	2.6
+Version:	2.6.0
 Release:	%{?beta:0.%{beta}.}1
 License:	GPLv2+
 Group:		Terminals
