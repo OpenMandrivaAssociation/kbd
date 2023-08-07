@@ -8,7 +8,7 @@
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	2.6.0
+Version:	2.6.1
 Release:	%{?beta:0.%{beta}.}1
 License:	GPLv2+
 Group:		Terminals
@@ -36,7 +36,7 @@ Patch4:		kbd-1.15.5-loadkeys-search-path.patch
 #   bz 1101007
 Patch5:		kbd-2.0.2-unicode-start-font.patch
 # Patch6: fixes issues found by static analysis
-Patch6:		kbd-2.4.0-covscan-fixes.patch
+Patch6:		https://src.fedoraproject.org/rpms/kbd/raw/rawhide/f/kbd-2.4.0-covscan-fixes.patch
 
 BuildRequires:	bison
 BuildRequires:	console-setup
