@@ -1,18 +1,18 @@
-diff -up kbd-2.3.0/src/loadkeys.c.orig kbd-2.3.0/src/loadkeys.c
---- kbd-2.3.0/src/loadkeys.c.orig	2020-06-02 12:16:45.000000000 +0200
-+++ kbd-2.3.0/src/loadkeys.c	2020-07-16 09:02:50.398864688 +0200
-@@ -28,6 +28,8 @@
+diff -up kbd-2.6.2/src/loadkeys.c.loadkeys-search-path kbd-2.6.2/src/loadkeys.c
+--- kbd-2.6.2/src/loadkeys.c.loadkeys-search-path	2023-08-15 20:04:12.111154418 +0200
++++ kbd-2.6.2/src/loadkeys.c	2023-08-15 20:05:01.662587204 +0200
+@@ -27,6 +27,8 @@
+ 
  static const char *const dirpath1[] = {
- 	"",
  	DATADIR "/" KEYMAPDIR "/**",
 +	DATADIR "/" XKBKEYMAPDIR "/",
 +	DATADIR "/" LEGACYKEYMAPDIR "/**",
  	KERNDIR "/",
  	NULL
  };
-diff -up kbd-2.3.0/src/paths.h.orig kbd-2.3.0/src/paths.h
---- kbd-2.3.0/src/paths.h.orig	2020-07-16 09:02:59.243010909 +0200
-+++ kbd-2.3.0/src/paths.h	2020-07-16 09:03:23.446410942 +0200
+diff -up kbd-2.6.2/src/paths.h.loadkeys-search-path kbd-2.6.2/src/paths.h
+--- kbd-2.6.2/src/paths.h.loadkeys-search-path	2023-08-09 13:57:23.000000000 +0200
++++ kbd-2.6.2/src/paths.h	2023-08-15 20:04:12.111154418 +0200
 @@ -5,6 +5,8 @@
   * The following five subdirectories are defined:
   */
