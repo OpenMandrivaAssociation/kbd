@@ -14,11 +14,9 @@ License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
 Source0:	https://kernel.org/pub/linux/utils/kbd/%{name}-%{version}%{?beta:-%{beta}}.tar.xz
-Source1:	kbd-latsun-fonts.tar.bz2
-Source2:	kbd-latarcyrheb-32.tar.bz2
-Source3:	xml2lst.pl
-Source4:	vlock.pamd
-Source5:	kbdinfo.1
+Source1:	xml2lst.pl
+Source2:	vlock.pamd
+Source3:	kbdinfo.1
 
 # From suse
 Source10:	genmap4systemd.sh
@@ -66,9 +64,9 @@ The %{name}-legacy package contains original keymaps for kbd package.
 Please note that %{name}-legacy is not helpful without kbd.
 
 %prep
-%setup -q -a 1 -a 2 -n %{name}-%{version}%{?beta:-%{beta}}
-cp -fp %{SOURCE3} .
-cp -fp %{SOURCE10} .
+%setup -q -n %{name}-%{version}%{?beta:-%{beta}}
+cp -fp %{S:1} .
+cp -fp %{S:10} .
 %patch0 -p1 -b .keycodes-man
 %patch1 -p1 -b .sparc
 %patch2 -p1 -b .unicode_start
@@ -130,12 +128,12 @@ ln -s fa.map.gz %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/ara.map.gz
 sed -i -e 's,\<kbd_mode\>,%{_bindir}/kbd_mode,g;s,\<setfont\>,%{_bindir}/setfont,g' \
         %{buildroot}%{_bindir}/unicode_start
 
-# install kbdinfo manpage
-install -m644 %{SOURCE5} %{buildroot}%{_mandir}/man1/kbdinfo.1
-
 # Install PAM configuration for vlock
 mkdir -p %{buildroot}%{_sysconfdir}/pam.d
-install -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/pam.d/vlock
+install -m 644 %{S:2} %{buildroot}%{_sysconfdir}/pam.d/vlock
+
+# install kbdinfo manpage
+install -m644 %{S:3} %{buildroot}%{_mandir}/man1/kbdinfo.1
 
 # Move original keymaps to legacy directory
 mkdir -p %{buildroot}%{kbd_datadir}/keymaps/legacy
