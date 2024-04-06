@@ -8,7 +8,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.6.4
-Release:	%{?beta:0.%{beta}.}2
+Release:	%{?beta:0.%{beta}.}3
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -186,25 +186,10 @@ rm -f %{buildroot}%{_prefix}/lib/debug/%{_libdir}/libtswrap*
 %{_datadir}/consolefonts
 %{_datadir}/consoletrans
 %{_datadir}/keymaps
-%{_datadir}/unimaps
 %exclude %{_datadir}/keymaps/legacy
+%{_datadir}/unimaps
 %{_datadir}/systemd/kbd-model-map.xkb-generated
 %doc %{_mandir}/*/*
-%ghost /usr/lib/kbd.rpmmoved
 
 %files legacy
 %{_datadir}/keymaps/legacy
-
-# Get rid of the traditional /usr/lib/kbd directory structure.
-# It makes much more sense to keep all consolefonts (kbd + console-setup + ...)
-# in one place
-# Unfortunately this is even more tricky than usual because the right place
-# (/usr/share/consolefonts etc.) already exists from console-setup, so a simple
-# os.rename("/usr/lib/kbd", ...) won't do the trick.
-# Then again, since nothing outside of kbd is supposed to put stuff there, we can
-# take a nasty shortcut...
-%pretrans -p <lua>
-st = posix.stat("/usr/lib/kbd")
-if st and st.type == "directory" then
-  status = os.rename("/usr/lib/kbd", "/usr/lib/kbd.rpmmoved")
-end
