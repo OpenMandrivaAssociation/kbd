@@ -3,13 +3,12 @@
 %global optflags %{optflags} -Oz --rtlib=compiler-rt
 %endif
 
-%define kbd_datadir %{_exec_prefix}/lib/kbd
 #define beta rc1
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.6.4
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -100,7 +99,7 @@ cd -
 
 %build
 %configure \
-	--datadir=%{kbd_datadir} \
+	--datadir=%{_datadir} \
 	--localedir=%{_localedir} \
 	--enable-nls \
 	--enable-optional-progs
@@ -111,18 +110,18 @@ cd -
 %make_install localedir=%{_localedir}
 
 # ro_win.map.gz is useless
-rm -f %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/ro_win.map.gz
+rm -f %{buildroot}%{_datadir}/keymaps/i386/qwerty/ro_win.map.gz
 
 # Create additional name for Serbian latin keyboard
-ln -s sr-cy.map.gz %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/sr-latin.map.gz
+ln -s sr-cy.map.gz %{buildroot}%{_datadir}/keymaps/i386/qwerty/sr-latin.map.gz
 
 # The rhpl keyboard layout table is indexed by kbd layout names, so we need a
 # Korean keyboard
-ln -s us.map.gz %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/ko.map.gz
+ln -s us.map.gz %{buildroot}%{_datadir}/keymaps/i386/qwerty/ko.map.gz
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=2015972
 # xkb Arabic layout is 'ara', not 'fa', langtable tells us to use 'ara'
-ln -s fa.map.gz %{buildroot}%{kbd_datadir}/keymaps/i386/qwerty/ara.map.gz
+ln -s fa.map.gz %{buildroot}%{_datadir}/keymaps/i386/qwerty/ara.map.gz
 
 # Some microoptimization
 sed -i -e 's,\<kbd_mode\>,%{_bindir}/kbd_mode,g;s,\<setfont\>,%{_bindir}/setfont,g' \
@@ -136,14 +135,14 @@ install -m 644 %{S:2} %{buildroot}%{_sysconfdir}/pam.d/vlock
 install -m644 %{S:3} %{buildroot}%{_mandir}/man1/kbdinfo.1
 
 # Move original keymaps to legacy directory
-mkdir -p %{buildroot}%{kbd_datadir}/keymaps/legacy
-mv %{buildroot}%{kbd_datadir}/keymaps/{amiga,atari,i386,include,mac,ppc,sun} %{buildroot}%{kbd_datadir}/keymaps/legacy
+mkdir -p %{buildroot}%{_datadir}/keymaps/legacy
+mv %{buildroot}%{_datadir}/keymaps/{amiga,atari,i386,include,mac,ppc,sun} %{buildroot}%{_datadir}/keymaps/legacy
 
 # Make sure Perl has a locale where uc/lc works for unicode codepoints
 # see e.g. https://perldoc.perl.org/perldiag.html#Wide-character-(U%2b%25X)-in-%25s
 export LC_ALL=C.utf-8
 # Convert X keyboard layouts to console keymaps
-mkdir -p %{buildroot}%{kbd_datadir}/keymaps/xkb
+mkdir -p %{buildroot}%{_datadir}/keymaps/xkb
 perl xml2lst.pl < %{_datadir}/X11/xkb/rules/base.xml > layouts-variants.lst
 while read line; do
     XKBLAYOUT=$(echo "$line" | cut -d " " -f 1)
@@ -152,7 +151,7 @@ while read line; do
     ckbcomp "$XKBLAYOUT" "$XKBVARIANT" > /tmp/"$XKBLAYOUT"-"$XKBVARIANT".map
 # skip converted layouts which cannot input ASCII (rh#1031848)
     grep -q "U+0041" /tmp/"$XKBLAYOUT"-"$XKBVARIANT".map && \
-    gzip -cn9 /tmp/"$XKBLAYOUT"-"$XKBVARIANT".map > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
+    gzip -cn9 /tmp/"$XKBLAYOUT"-"$XKBVARIANT".map > %{buildroot}%{_datadir}/keymaps/xkb/"$XKBLAYOUT"-"$XKBVARIANT".map.gz
     rm /tmp/"$XKBLAYOUT"-"$XKBVARIANT".map
 done < layouts-variants.lst
 
@@ -161,18 +160,18 @@ cat layouts-list.lst | sort -u >> layouts-list-uniq.lst
 while read line; do
     ckbcomp "$line" > /tmp/"$line".map
     grep -q "U+0041" /tmp/"$line".map && \
-    gzip -cn9 /tmp/"$line".map > %{buildroot}%{kbd_datadir}/keymaps/xkb/"$line".map.gz
+    gzip -cn9 /tmp/"$line".map > %{buildroot}%{_datadir}/keymaps/xkb/"$line".map.gz
     rm /tmp/"$line".map
 done < layouts-list-uniq.lst
 
-[ ! "$(ls -A %{buildroot}%{kbd_datadir}/keymaps/xkb)" ] && "Xkb keymaps are missing!" && exit 1
+[ ! "$(ls -A %{buildroot}%{_datadir}/keymaps/xkb)" ] && "Xkb keymaps are missing!" && exit 1
 
 # Link open to openvt
 ln -s openvt %{buildroot}%{_bindir}/open
 
 # Generate entries for systemd's /usr/share/systemd/kbd-model-map
 mkdir -p  %{buildroot}%{_datadir}/systemd
-sh ./genmap4systemd.sh %{buildroot}/%{kbd_datadir}/keymaps/xkb \
+sh ./genmap4systemd.sh %{buildroot}/%{_datadir}/keymaps/xkb \
   > %{buildroot}%{_datadir}/systemd/kbd-model-map.xkb-generated
 
 # remove library used only for tests
@@ -184,10 +183,28 @@ rm -f %{buildroot}%{_prefix}/lib/debug/%{_libdir}/libtswrap*
 %files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/pam.d/vlock
 %{_bindir}/*
-%{kbd_datadir}
-%exclude %{kbd_datadir}/keymaps/legacy
+%{_datadir}/consolefonts
+%{_datadir}/consoletrans
+%{_datadir}/keymaps
+%{_datadir}/unimaps
+%exclude %{_datadir}/keymaps/legacy
 %{_datadir}/systemd/kbd-model-map.xkb-generated
 %doc %{_mandir}/*/*
+%ghost /usr/lib/kbd.rpmmoved
 
 %files legacy
-%{kbd_datadir}/keymaps/legacy
+%{_datadir}/keymaps/legacy
+
+# Get rid of the traditional /usr/lib/kbd directory structure.
+# It makes much more sense to keep all consolefonts (kbd + console-setup + ...)
+# in one place
+# Unfortunately this is even more tricky than usual because the right place
+# (/usr/share/consolefonts etc.) already exists from console-setup, so a simple
+# os.rename("/usr/lib/kbd", ...) won't do the trick.
+# Then again, since nothing outside of kbd is supposed to put stuff there, we can
+# take a nasty shortcut...
+%pretrans -p <lua>
+st = posix.stat("/usr/lib/kbd")
+if st and st.type == "directory" then
+  status = os.rename("/usr/lib/kbd", "/usr/lib/kbd.rpmmoved")
+end
