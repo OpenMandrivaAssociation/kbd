@@ -8,7 +8,7 @@
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
 Version:	2.6.4
-Release:	%{?beta:0.%{beta}.}3
+Release:	%{?beta:0.%{beta}.}4
 License:	GPLv2+
 Group:		Terminals
 Url:		http://www.kbd-project.org/
@@ -63,16 +63,9 @@ The %{name}-legacy package contains original keymaps for kbd package.
 Please note that %{name}-legacy is not helpful without kbd.
 
 %prep
-%setup -q -n %{name}-%{version}%{?beta:-%{beta}}
+%autosetup -p1 -n %{name}-%{version}%{?beta:-%{beta}}
 cp -fp %{S:1} .
 cp -fp %{S:10} .
-%patch0 -p1 -b .keycodes-man
-%patch1 -p1 -b .sparc
-%patch2 -p1 -b .unicode_start
-%patch3 -p1 -b .sg-decimal-separator
-%patch4 -p1 -b .loadkeys-search-path
-%patch5 -p1 -b .unicode-start-font
-%patch6 -p1 -b .covscan-fixes
 autoreconf -f
 
 # 7-bit maps are obsolete; so are non-euro maps
