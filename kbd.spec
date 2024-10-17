@@ -11,7 +11,7 @@ Version:	2.6.4
 Release:	%{?beta:0.%{beta}.}4
 License:	GPLv2+
 Group:		Terminals
-Url:		http://www.kbd-project.org/
+Url:		https://www.kbd-project.org/
 Source0:	https://kernel.org/pub/linux/utils/kbd/%{name}-%{version}%{?beta:-%{beta}}.tar.xz
 Source1:	xml2lst.pl
 Source2:	vlock.pamd
