@@ -35,6 +35,11 @@ Patch5:		kbd-2.0.2-unicode-start-font.patch
 # Patch6: fixes issues found by static analysis
 Patch6:		https://src.fedoraproject.org/rpms/kbd/raw/rawhide/f/kbd-2.4.0-covscan-fixes.patch
 
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	bison
 BuildRequires:	console-setup
 BuildRequires:	flex
