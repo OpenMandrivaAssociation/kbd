@@ -7,7 +7,7 @@
 
 Summary:	Keyboard and console utilities for Linux
 Name:		kbd
-Version:	2.6.4
+Version:	2.10.0
 Release:	%{?beta:0.%{beta}.}4
 License:	GPLv2+
 Group:		Terminals
@@ -20,18 +20,18 @@ Source3:	kbdinfo.1
 # From suse
 Source10:	genmap4systemd.sh
 # Patch0: puts additional information into man pages
-Patch0:		kbd-1.15-keycodes-man.patch
+# dropped (no longer applies): Patch0:		kbd-1.15-keycodes-man.patch
 # Patch1: sparc modifications
-Patch1:		kbd-1.15-sparc.patch
+# dropped (no longer applies): Patch1:		kbd-1.15-sparc.patch
 # Patch2: adds default unicode font to unicode_start script
-Patch2:		kbd-1.15-unicode_start.patch
+# dropped (no longer applies): Patch2:		kbd-1.15-unicode_start.patch
 # Patch3: fixes decimal separator in Swiss German keyboard layout, bz 882529
-Patch3:		kbd-1.15.5-sg-decimal-separator.patch
+# dropped (no longer applies): Patch3:		kbd-1.15.5-sg-decimal-separator.patch
 # Patch4: adds xkb and legacy keymaps subdirs to loadkyes search path, bz 1028207 
-Patch4:		kbd-1.15.5-loadkeys-search-path.patch
+# dropped (no longer applies): Patch4:		kbd-1.15.5-loadkeys-search-path.patch
 # Patch5: don't hardcode font used in unicode_start, take it from vconsole.conf,
 #   bz 1101007
-Patch5:		kbd-2.0.2-unicode-start-font.patch
+# dropped (no longer applies): Patch5:		kbd-2.0.2-unicode-start-font.patch
 # Patch6: fixes issues found by static analysis
 Patch6:		https://src.fedoraproject.org/rpms/kbd/raw/rawhide/f/kbd-2.4.0-covscan-fixes.patch
 
